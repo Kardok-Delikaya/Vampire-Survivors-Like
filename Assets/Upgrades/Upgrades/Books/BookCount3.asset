@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 007978e94f6be944b9121b9ad0d7f809, type: 3}
+  m_Name: BookCount3
+  m_EditorClassIdentifier: 
+  upgradeType: 0
+  Name: Books LVL8
+  Description: +1 Book
+  icon: {fileID: 503160004, guid: 5b4c58904d68f7e4eb0a9b0d85c9e718, type: 3}
+  weaponData: {fileID: 11400000, guid: 8f643b750ce7ed74a948d01424a2ad65, type: 2}
+  weaponValues:
+    damage: 0
+    timer: 0
+    count: 1
+    durability: 0
+    stayTime: 0
+    area: 0
+    speed: 0
+    hasEvolved: 0
+  item: {fileID: 0}
+  itemValues:
+    maxHealth: 0
+    armor: 0
+    speed: 0
+    regenerate: 0
+    magnet: 0
+  upgrades: []
+  lastLevel: 1
+  common: {fileID: 11400000, guid: 86ff94b7db024cc4f8c5f52690a5841e, type: 2}

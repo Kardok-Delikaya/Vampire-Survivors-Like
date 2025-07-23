@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d4c2da687211e4f8a3feba2a7b07b8, type: 3}
+  m_Name: Books
+  m_EditorClassIdentifier: 
+  Name: Books
+  values:
+    damage: 10
+    timer: 6
+    count: 1
+    durability: 0
+    stayTime: 3
+    area: 1
+    speed: 1
+    hasEvolved: 0
+  weaponPrefab: {fileID: 3618540216321630511, guid: 62625bb477d68314e81a9b3f79f644df,
+    type: 3}
+  upgrades:
+  - {fileID: 11400000, guid: eb583f77e9db82c43b5669e20abf3a0b, type: 2}

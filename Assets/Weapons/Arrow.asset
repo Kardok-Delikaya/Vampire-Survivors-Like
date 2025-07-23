@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d4c2da687211e4f8a3feba2a7b07b8, type: 3}
+  m_Name: Arrow
+  m_EditorClassIdentifier: 
+  Name: Arrow
+  values:
+    damage: 4
+    timer: 1
+    count: 1
+    durability: 1
+    stayTime: 5
+    area: 1
+    speed: 0
+    hasEvolved: 0
+  weaponPrefab: {fileID: 8457517789468782758, guid: 0288fb779a2cb0d45ac0262b22af194c,
+    type: 3}
+  upgrades:
+  - {fileID: 11400000, guid: db09df105b2b45d45a187560470e4686, type: 2}
