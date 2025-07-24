@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 5393804221955499262}
   - component: {fileID: 5393804221955499257}
   - component: {fileID: 5393804221955499260}
-  - component: {fileID: 5393804221955499261}
   - component: {fileID: 5536525660438375530}
+  - component: {fileID: 5393804221955499261}
   m_Layer: 0
   m_Name: BossSkeleton2
   m_TagString: Untagged
@@ -140,24 +140,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &5393804221955499261
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5393804221955499256}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63310a96baf26d24baafabea7324e31c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 2000
-  speed: 4
-  damage: 30
-  damagePopUp: {fileID: 744951814735632710, guid: 49b2860cdfd96d44ab6c6b6a11f2f028, type: 3}
-  xpRewardCount: 250
-  canBePushed: 0
 --- !u!61 &5536525660438375530
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -204,3 +186,21 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.0625, y: 1.875}
   m_EdgeRadius: 0
+--- !u!114 &5393804221955499261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5393804221955499256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63310a96baf26d24baafabea7324e31c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 2000
+  speed: 4
+  damage: 30
+  damagePopUp: {fileID: 744951814735632710, guid: 49b2860cdfd96d44ab6c6b6a11f2f028, type: 3}
+  xpRewardCount: 2500
+  canBePushed: 0

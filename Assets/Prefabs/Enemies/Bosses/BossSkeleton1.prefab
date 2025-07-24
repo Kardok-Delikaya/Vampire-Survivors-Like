@@ -184,7 +184,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.58844185, y: 1.84375}
+  m_Size: {x: 1.5, y: 1.5}
   m_EdgeRadius: 0
 --- !u!114 &3245775493093506830
 MonoBehaviour:
@@ -202,5 +202,5 @@ MonoBehaviour:
   speed: 4
   damage: 20
   damagePopUp: {fileID: 744951814735632710, guid: 49b2860cdfd96d44ab6c6b6a11f2f028, type: 3}
-  xpRewardCount: 150
+  xpRewardCount: 1500
   canBePushed: 0

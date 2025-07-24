@@ -8,7 +8,7 @@ namespace VSLike
     {
         void Start()
         {
-            Destroy(gameObject, 1f);
+            Destroy(gameObject, .5f);
         }
 
         void FixedUpdate()

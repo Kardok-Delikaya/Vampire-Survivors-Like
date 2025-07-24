@@ -202,5 +202,5 @@ MonoBehaviour:
   speed: 5
   damage: 5
   damagePopUp: {fileID: 744951814735632710, guid: 49b2860cdfd96d44ab6c6b6a11f2f028, type: 3}
-  xpRewardCount: 50
+  xpRewardCount: 500
   canBePushed: 0
