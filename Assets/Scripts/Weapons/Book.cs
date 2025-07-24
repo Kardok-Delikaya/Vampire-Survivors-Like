@@ -6,8 +6,9 @@ namespace VSLike
 {
     public class Book : MonoBehaviour
     {
-        public int damage;
         Vector3 pos;
+
+        public int damage;
         public float time;
         public int exitTime;
         public int backTime;
@@ -15,6 +16,7 @@ namespace VSLike
         public float x, y;
         public float area;
         public List<Collider2D> enemiesHasBeenShooted;
+
         void FixedUpdate()
         {
             if (active)

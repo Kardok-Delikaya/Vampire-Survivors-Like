@@ -9,10 +9,13 @@ namespace VSLike
         public int damage;
         public int speed;
         public float stayTime;
+
         void FixedUpdate()
         {
             transform.position += transform.up * Time.deltaTime * speed;
+
             Collider2D[] objs = Physics2D.OverlapCircleAll(transform.position, .3f);
+
             if (objs.Length!=0)
             {
                 for(int i = 0; i < objs.Length; i++)
@@ -26,10 +29,9 @@ namespace VSLike
             }
 
             stayTime -= Time.fixedDeltaTime;
-            if (stayTime < 0)
-            {
+            if(stayTime < 0)
                 Destroy(gameObject);
-            }
+            
         }
         void BlowUp()
         {

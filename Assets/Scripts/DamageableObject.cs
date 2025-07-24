@@ -7,34 +7,36 @@ namespace VSLike
     public class DamageableObject : MonoBehaviour, IDamage
     {
         Transform player;
-        [SerializeField] GameObject can;
-        [SerializeField] GameObject altin;
+        [SerializeField] GameObject health;
+        [SerializeField] GameObject gold;
         private void Start()
         {
-            player = FindObjectOfType<Player>().transform;
+            player = FindAnyObjectByType<Player>().transform;
         }
 
         void FixedUpdate()
         {
             float distance = Vector3.Distance(transform.position, player.position);
+
             if (distance > 50)
             {
                 Destroy(gameObject);
             }
         }
 
-        public void TakeDamage(int Hasar, int güç)
+        public void TakeDamage(int damage, int power)
         {
-            int randomNumber;
-            randomNumber = Random.Range(0, 100);
+            int randomNumber = Random.Range(0, 100);
+
             if (randomNumber < 30)
             {
-                Instantiate(can, transform.position, transform.rotation);
+                Instantiate(health, transform.position, transform.rotation);
             }
             else
             {
-                Instantiate(altin, transform.position, transform.rotation);
+                Instantiate(gold, transform.position, transform.rotation);
             }
+
             Destroy(gameObject);
         }
     }

@@ -69,7 +69,7 @@ namespace VSLike
         public override void Evolution()
         {
             weaponValues.area += 0.5f;
-            FindObjectOfType<GameManager>().AddToUpgradeList(newUpgrades);
+            FindAnyObjectByType<GameManager>().AddToUpgradeList(newUpgrades);
         }
     }
 }

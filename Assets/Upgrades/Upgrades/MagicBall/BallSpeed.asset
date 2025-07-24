@@ -24,7 +24,7 @@ MonoBehaviour:
     durability: 0
     stayTime: 0
     area: 0
-    speed: 0.6
+    speed: 9
     hasEvolved: 0
   item: {fileID: 0}
   itemValues:

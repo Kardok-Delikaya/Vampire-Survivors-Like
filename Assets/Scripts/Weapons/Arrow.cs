@@ -29,6 +29,7 @@ namespace VSLike
                     }
                 }
             }
+
             if (tMin != null)
                 poz.up = tMin.position - poz.position;
         }
@@ -37,18 +38,19 @@ namespace VSLike
         {
             for (int i = 0; i < weaponValues.count; i++)
             {
-                GameObject fýrlatýlan = Instantiate(projectile, projectileSpawnPoint[i]);
-                GetClosestEnemy(fýrlatýlan.transform);
+                GameObject throwedArrow = Instantiate(projectile, projectileSpawnPoint[i]);
+                GetClosestEnemy(throwedArrow.transform);
+                throwedArrow.GetComponent<IThrowable>().Equalize(weaponValues.damage, weaponValues.durability, weaponValues.stayTime, weaponValues.speed, weaponValues.hasEvolved);
+
                 if (isArrow)
-                    fýrlatýlan.transform.SetParent(null);
-                fýrlatýlan.GetComponent<IThrowable>().Equalize(weaponValues.damage, weaponValues.durability, weaponValues.stayTime, weaponValues.speed, weaponValues.hasEvolved);
+                    throwedArrow.transform.SetParent(null);
             }
         }
 
         public override void Evolution()
         {
             this.weaponValues.hasEvolved = true;
-            FindObjectOfType<GameManager>().AddToUpgradeList(newUpgrades);
+            FindAnyObjectByType<GameManager>().AddToUpgradeList(newUpgrades);
         }
     }
 }

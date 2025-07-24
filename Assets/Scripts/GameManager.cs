@@ -1,23 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.Rendering;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.InputSystem;
 
 namespace VSLike
 {
     public class GameManager : MonoBehaviour
     {
-        float maxXp;
-        public float xp;
         Spawner spawner;
         int killCount;
         int targetKillCount;
         int goldCount;
-        
+        float maxXp;
+        float xp;
+
         [Header("Level")]
         public int level;
 
@@ -49,7 +47,7 @@ namespace VSLike
        
         void Start()
         {
-            goldCount=PlayerPrefs.GetInt("Game2_Gold");
+            goldCount=PlayerPrefs.GetInt("Gold_Count");
             goldCountText.text = goldCount + "";
             maxXp = 5f;
             targetKillCount = 50;
@@ -58,19 +56,26 @@ namespace VSLike
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
             CleanButtons();
+            AddStartWeapon(1);
+            AddStartWeapon(1);
+            AddStartWeapon(1);
+            AddStartWeapon(1);
             AddStartWeapon(0);
             AddToUpgradeList(pasiveUpgrades);
         }
 
-        public void Menu()
+        public void Menu(InputAction.CallbackContext context)
         {
-            if (pauseMenu.activeSelf || rewardMenu.activeSelf)
+            if (context.performed)
             {
-                CloseMenu();
-            }
-            else if (!levelMenu.activeSelf)
-            {
-                OpenMenu();
+                if (pauseMenu.activeSelf || rewardMenu.activeSelf)
+                {
+                    CloseMenu();
+                }
+                else if (!levelMenu.activeSelf)
+                {
+                    OpenMenu();
+                }
             }
         }
 
@@ -78,6 +83,7 @@ namespace VSLike
         {
             killCount++;
             killText.text = killCount + "";
+
             if (killCount == targetKillCount)
             {
                 GetReward();
@@ -121,9 +127,11 @@ namespace VSLike
                     targetKillCount += 500;
                     break;
             }
+
             goldCount += i;
             character.ShieldValue();
             goldCountText.text = goldCount + "";
+            PlayerPrefs.SetInt("Gold_Count", goldCount);
             Pause(0);
         }
 
@@ -173,13 +181,13 @@ namespace VSLike
             int rewardGoldCount = Random.Range(level, level * 3);
             goldCount += rewardGoldCount;
             goldCountText.text = goldCount + "";
+            PlayerPrefs.SetInt("Gold_Count", goldCount);
             character.Message("+" + rewardGoldCount, Color.yellow);
         }
 
         public void Death()
         {
             deadScreen.SetActive(true);
-            PlayerPrefs.SetInt("Game2_Gold", goldCount);
             Time.timeScale = 0;
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
@@ -187,13 +195,11 @@ namespace VSLike
 
         public void ChangeScene(int i)
         {
-            PlayerPrefs.SetInt("Game2_Gold", goldCount);
             SceneManager.LoadScene(i);
         }
 
         public void Restart()
         {
-            PlayerPrefs.SetInt("Game2_Gold", goldCount);
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 

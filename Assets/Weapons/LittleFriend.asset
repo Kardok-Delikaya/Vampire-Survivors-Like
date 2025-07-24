@@ -20,9 +20,8 @@ MonoBehaviour:
     durability: 10
     stayTime: 5
     area: 1
-    speed: 0
+    speed: 20
     hasEvolved: 0
-  weaponPrefab: {fileID: 894771193857862018, guid: c43f2e2faeff1be43934327fb05ed307,
-    type: 3}
+  weaponPrefab: {fileID: 894771193857862018, guid: c43f2e2faeff1be43934327fb05ed307, type: 3}
   upgrades:
   - {fileID: 11400000, guid: 93348a0289a7c6049a65054665d98e09, type: 2}

@@ -6,31 +6,35 @@ namespace VSLike
 {
     public class ThrowingKnife : Weapons
     {
-        Animator anim;
+        Player player;
+        int knifeCount;
+        int vertical;
+        int horizontal=1;
+
         [SerializeField] GameObject knife;
         [SerializeField] UpgradeData weapon;
-        int knifeCount;
+
         private void Start()
         {
-            anim = GetComponentInParent<Animator>();
+            player = GetComponentInParent<Player>();
         }
+
         public override void Attack()
         {
             knifeCount = weaponValues.count;
             KnifeThrow();
         }
+
         void KnifeThrow()
         {
             GameObject spawnedKnife = Instantiate(knife, new Vector3(transform.position.x + Random.Range(-.5f, .5f), transform.position.y + Random.Range(-.75f, 1.25f), 0), transform.rotation);
-            spawnedKnife.GetComponent<IThrowable>().Equalize(weaponValues.damage, weaponValues.durability, weaponValues.stayTime,0, false);
-            int vertical;
-            int horizontal;
+            spawnedKnife.GetComponent<IThrowable>().Equalize(weaponValues.damage, weaponValues.durability, weaponValues.stayTime, weaponValues.speed, false);
 
-            if (GetComponentInParent<InputHandler>().vertical > .2)
+            if (player.pos.y > .2)
             {
                 vertical = 1;
             }
-            else if (GetComponentInParent<InputHandler>().vertical < -.2)
+            else if (player.pos.y < -.2)
             {
                 vertical = -1;
             }
@@ -38,34 +42,34 @@ namespace VSLike
             {
                 vertical = 0;
             }
-            if (GetComponentInParent<InputHandler>().horizontal > .2)
+
+            if (player.pos.x > .2)
             {
                 horizontal = 1;
             }
-            else if (GetComponentInParent<InputHandler>().horizontal < -.2)
+            else if (player.pos.x < -.2)
             {
                 horizontal = -1;
             }
             else
             {
-                horizontal = 0;
+                horizontal = player.sprite.flipX ? -1 : 1;
             }
-            if (vertical != 0 || horizontal != 0)
+
+            if (vertical != 0 && Mathf.Abs(player.pos.x) < .2)
             {
-                if (vertical == -1 && horizontal == 0)
-                {
-                    spawnedKnife.transform.eulerAngles = new Vector3(0, 0, 180);
-                }
-                else
-                {
-                    spawnedKnife.transform.right = new Vector2(vertical, -horizontal);
-                }
+                spawnedKnife.transform.localRotation = Quaternion.Euler(0, 0, vertical == 1 ? 0 : 180);
             }
             else
             {
-                spawnedKnife.transform.eulerAngles = new Vector3(0, 0, -anim.GetFloat("Idle") * 90);
+                if (horizontal == 1)
+                    spawnedKnife.transform.localRotation = Quaternion.Euler(0, 0, 180 + horizontal * 90 + vertical * 45);
+                else
+                    spawnedKnife.transform.localRotation = Quaternion.Euler(0, 0, 180 + horizontal * 90 - vertical * 45);
             }
+
             knifeCount--;
+
             if (knifeCount > 0)
             {
                 Invoke("KnifeThrow", .1f);
@@ -74,7 +78,7 @@ namespace VSLike
 
         public override void Evolution()
         {
-            FindObjectOfType<GameManager>().AddWeapon(weapon);
+            FindAnyObjectByType<GameManager>().AddWeapon(weapon);
             Destroy(this.gameObject);
         }
     }

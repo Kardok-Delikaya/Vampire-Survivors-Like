@@ -6,17 +6,24 @@ namespace VSLike
 {
     public class LittleFriend : Weapons
     {
-        [SerializeField] GameObject bullet, bomb;
-        [SerializeField] int bulletCount, bombCount;
-        Animator anim;
+        Player player;
+        int vertical;
+        int horizontal=1;
+        int bulletCount;
+        int bombCount;
+        [SerializeField] GameObject bullet;
+        [SerializeField] GameObject bomb;
+
         private void Start()
         {
-            anim = GetComponentInParent<Animator>();
+            player = GetComponentInParent<Player>();
         }
+
         public override void Attack()
         {
             bombCount = (int)weaponValues.speed;
             bulletCount = weaponValues.durability;
+
             if (bombCount == 2)
             {
                 BombThrow();
@@ -26,11 +33,12 @@ namespace VSLike
                 BulletThrow();
             }
         }
+
         void BulletThrow()
         {
             bulletCount--;
             GameObject IBullet = Instantiate(bullet, transform);
-            IBullet.GetComponent<Projectile>().damage = weaponValues.damage;
+            IBullet.GetComponent<Projectile>().Equalize(weaponValues.damage, weaponValues.durability, weaponValues.stayTime, weaponValues.speed, false);
             StraightShoot(IBullet);
             IBullet.transform.eulerAngles = new Vector3(0, 0, Random.Range(IBullet.transform.eulerAngles.z - 15, IBullet.transform.eulerAngles.z + 15));
             if (bulletCount > 0)
@@ -42,27 +50,29 @@ namespace VSLike
                 Invoke("BombThrow", 0.15f);
             }
         }
+
         void BombThrow()
         {
             bombCount--;
             GameObject Ibomba = Instantiate(bomb, transform);
             Ibomba.GetComponent<Bomb>().damage = weaponValues.damage * 2;
+            Ibomba.GetComponent<Bomb>().speed = (int)weaponValues.speed*2;
             Ibomba.GetComponent<Bomb>().stayTime = weaponValues.stayTime;
             StraightShoot(Ibomba);
+
             if (bulletCount > 0)
             {
                 Invoke("BulletThrow", 0.05f);
             }
         }
+
         void StraightShoot(GameObject projectile)
         {
-            int vertical;
-            int horizontal;
-            if (GetComponentInParent<InputHandler>().vertical > .2)
+            if (player.pos.y > .2)
             {
                 vertical = 1;
             }
-            else if (GetComponentInParent<InputHandler>().vertical < -.2)
+            else if (player.pos.y < -.2)
             {
                 vertical = -1;
             }
@@ -70,33 +80,32 @@ namespace VSLike
             {
                 vertical = 0;
             }
-            if (GetComponentInParent<InputHandler>().horizontal > .2)
+
+            if (player.pos.x > .2)
             {
                 horizontal = 1;
             }
-            else if (GetComponentInParent<InputHandler>().horizontal < -.2)
+            else if (player.pos.x< -.2)
             {
                 horizontal = -1;
             }
             else
             {
-                horizontal = 0;
+                horizontal = player.sprite.flipX ? -1 : 1;
             }
-            if (vertical != 0 || horizontal != 0)
+
+            if (vertical != 0 && Mathf.Abs(player.pos.x) < .2)
             {
-                if (vertical == -1 && horizontal == 0)
-                {
-                    projectile.transform.eulerAngles = new Vector3(0, 0, 180);
-                }
-                else
-                {
-                    projectile.transform.right = new Vector2(vertical, -horizontal);
-                }
+                projectile.transform.localRotation = Quaternion.Euler(0, 0, vertical == 1 ? 0 : 180);
             }
             else
             {
-                projectile.transform.eulerAngles = new Vector3(0, 0, -anim.GetFloat("Idle") * 90);
+                if (horizontal == 1)
+                    projectile.transform.localRotation = Quaternion.Euler(0, 0, 180 + horizontal * 90 + vertical * 45);
+                else
+                    projectile.transform.localRotation = Quaternion.Euler(0, 0, 180 + horizontal * 90 - vertical * 45);
             }
+
         }
 
         public override void Evolution()

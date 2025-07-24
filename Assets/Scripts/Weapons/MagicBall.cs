@@ -6,17 +6,25 @@ namespace VSLike
 {
     public class MagicBall : MonoBehaviour, IThrowable
     {
-        public bool hasEvolved;
-        public int damage;
-        public float speed;
         int count;
-        public float stayingTime;
-        public List<Collider2D> hittedEnemies;
+        List<Collider2D> hittedEnemies=new List<Collider2D>();
+
+        bool hasEvolved;
+        int damage;
+        float speed;
+        float stayTime;
+
         void FixedUpdate()
         {
-            stayingTime -= Time.fixedDeltaTime;
-            transform.position += transform.up * Time.deltaTime * 15 * speed;
+            stayTime -= Time.fixedDeltaTime;
+            if (stayTime < 0)
+                Destroy(gameObject);
+            
+
+            transform.position += transform.up * speed * Time.deltaTime;
+
             Collider2D[] enemies = Physics2D.OverlapCircleAll(transform.position, .3f);
+
             if (enemies.Length!=0)
             {
                 foreach (Collider2D c in enemies)
@@ -33,15 +41,12 @@ namespace VSLike
                     }
                 }
             }
-            if (stayingTime < 0)
-            {
-                Destroy(gameObject);
-            }
+            
             if (hasEvolved)
-            {
                 CheckLines();
-            }
+            
         }
+
         void CheckLines()
         {
             if (transform.localPosition.y > 9 && count != 1)
@@ -69,10 +74,10 @@ namespace VSLike
                 hittedEnemies.Clear();
             }
         }
-        public void Equalize(int damage, int can, float stayingTime, float speed, bool hasEvolved)
+        public void Equalize(int damage, int health, float stayingTime, float speed, bool hasEvolved)
         {
             this.damage = damage;
-            this.stayingTime = stayingTime;
+            this.stayTime = stayingTime;
             this.speed = speed;
             this.hasEvolved = hasEvolved;
         }

@@ -10,19 +10,23 @@ namespace VSLike
 
         public int id;
         public int count;
+
         private void Start()
         {
-            player = FindObjectOfType<Player>().transform;
+            player = FindAnyObjectByType<Player>().transform;
         }
+
         void FixedUpdate()
         {
             float distance = Vector3.Distance(transform.position, player.position);
+
             if (distance > 50)
             {
                 Destroy(gameObject);
+
                 if (id == 0)
                 {
-                    FindObjectOfType<Player>().xpCount--;
+                    FindAnyObjectByType<Player>().xpCount--;
                 }
             }
         }

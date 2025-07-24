@@ -19,13 +19,13 @@ namespace VSLike
 
         void Start()
         {
-            if (PlayerPrefs.GetInt("Game2_Gold") == 0)
+            if (PlayerPrefs.GetInt("Gold_Count") == 0)
             {
                 goldCount = 500;
             }
             else
             {
-                goldCount = PlayerPrefs.GetInt("Game2_Gold");
+                goldCount = PlayerPrefs.GetInt("Gold_Count");
             }
             
             goldText.text = goldCount + "";
@@ -51,6 +51,7 @@ namespace VSLike
                 PlayerPrefs.SetInt("Max Health Value", persistantUpgrade.values.maxHealth);
                 goldText.text = goldCount + "";
                 buttons[0].Upgrade();
+                PlayerPrefs.SetInt("Gold_Count", goldCount);
             }
         }
 
@@ -63,6 +64,7 @@ namespace VSLike
                 PlayerPrefs.SetInt("Armor Value", persistantUpgrade.values.armor);
                 goldText.text = goldCount + "";
                 buttons[1].Upgrade();
+                PlayerPrefs.SetInt("Gold_Count", goldCount);
             }
         }
 
@@ -75,6 +77,7 @@ namespace VSLike
                 PlayerPrefs.SetInt("Speed Value", persistantUpgrade.values.speed);
                 goldText.text = goldCount + "";
                 buttons[2].Upgrade();
+                PlayerPrefs.SetInt("Gold_Count", goldCount);
             }
         }
 
@@ -87,6 +90,7 @@ namespace VSLike
                 PlayerPrefs.SetInt("Regenerate Value", persistantUpgrade.values.regenerate);
                 goldText.text = goldCount + "";
                 buttons[3].Upgrade();
+                PlayerPrefs.SetInt("Gold_Count", goldCount);
             }
         }
 
@@ -99,6 +103,7 @@ namespace VSLike
                 PlayerPrefs.SetFloat("Magnet Value", persistantUpgrade.values.magnet);
                 goldText.text = goldCount + "";
                 buttons[4].Upgrade();
+                PlayerPrefs.SetInt("Gold_Count", goldCount);
             }
         }
 

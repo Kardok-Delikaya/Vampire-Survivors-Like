@@ -9,11 +9,14 @@ namespace VSLike
     {
         TextMeshProUGUI text;
         float time;
-        int minute, second;
+        int minute;
+        int second;
+
         void Start()
         {
             text = GetComponent<TextMeshProUGUI>();
         }
+
         void FixedUpdate()
         {
             time += Time.fixedDeltaTime;

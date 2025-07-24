@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 namespace VSLike
 {
@@ -8,8 +9,8 @@ namespace VSLike
     {
         Animator anim;
         Rigidbody2D rb;
-        InputHandler inputHandler;
-        Vector2 pos;
+        [HideInInspector] public SpriteRenderer sprite;
+        [HideInInspector] public Vector2 pos = new Vector2(0, 0);
         float waitingTimer;
 
         [Header("Character Stats")]
@@ -34,41 +35,39 @@ namespace VSLike
 
         void Start()
         {
+            sprite= GetComponent<SpriteRenderer>();
             GetPersistantUpgrades();
             health = maxHealth;
             anim = GetComponent<Animator>();
-            inputHandler = GetComponent<InputHandler>();
             rb = GetComponent<Rigidbody2D>();
             pos = new Vector3();
-        }
-        void Update()
-        {
-            float delta = Time.deltaTime;
-            inputHandler.TickInput(delta);
-            Movemment();
         }
 
         private void FixedUpdate()
         {
             GetItems();
+
             if (regenerate > 0)
                 Regenerate();
         }
 
-        void Movemment()
+        public void HandleMovement(InputAction.CallbackContext context)
         {
-            pos.x = inputHandler.horizontal;
-            pos.y = inputHandler.vertical;
-            if (pos.x > .1)
+            pos.x = context.ReadValue<Vector2>().x;
+            pos.y = context.ReadValue<Vector2>().y;
+
+            if (pos.x > .1 && sprite.flipX)
             {
-                anim.SetFloat("Idle", 1);
+                sprite.flipX = false;
             }
-            else if (pos.x < -.1)
+
+            if (pos.x < -.1 && !sprite.flipX)
             {
-                anim.SetFloat("Idle", -1);
+                sprite.flipX = true;
             }
+
             rb.linearVelocity = new Vector2(pos.x * speed, pos.y * speed);
-            anim.SetFloat("Hız", pos.sqrMagnitude);
+            anim.SetFloat("Speed", pos.sqrMagnitude);
         }
 
         void GetItems()
@@ -99,14 +98,14 @@ namespace VSLike
             switch (id)
             {
                 case 0:
-                    FindObjectOfType<GameManager>().GetXP(count);
+                    FindAnyObjectByType<GameManager>().GetXP(count);
                     xpCount--;
                     break;
                 case 1:
                     GetHealth(count);
                     break;
                 case 2:
-                    FindObjectOfType<GameManager>().GetGold();
+                    FindAnyObjectByType<GameManager>().GetGold();
                     break;
             }
         }
@@ -124,7 +123,7 @@ namespace VSLike
                 health -= (int)damage;
                 if (health <= 0)
                 {
-                    FindObjectOfType<GameManager>().Death();
+                    FindAnyObjectByType<GameManager>().Death();
                 }
                 healthBar.transform.localScale = new Vector3((float)health / maxHealth, 1, 1);
                 Message("-" + (int)damage, Color.red);
@@ -136,6 +135,7 @@ namespace VSLike
             float tempDamage = damage;
             damage -= shield;
             shield -= (int)tempDamage;
+
             if (damage < 0)
             {
                 damage = 0;
@@ -144,7 +144,8 @@ namespace VSLike
             {
                 shield = 0;
             }
-            FindObjectOfType<GameManager>().characterSpecs[1].text = shield + "";
+
+            FindAnyObjectByType<GameManager>().characterSpecs[1].text = shield + "";
             Message("-" + tempDamage, Color.blue);
             ShieldValue();
         }
@@ -204,8 +205,6 @@ namespace VSLike
 
         public void SpawnXP(Transform transform,int xpRewardCount)
         {
-            xpCount++;
-
             if (xpCount > 50)
             {
                 if (spawnedRedXP != null)
@@ -218,12 +217,14 @@ namespace VSLike
                     XP.GetComponent<Item>().count = xpRewardCount;
                     XP.GetComponent<SpriteRenderer>().color = Color.red;
                     spawnedRedXP = XP.GetComponent<Item>();
+                    xpCount++;
                 }
             }
             else
             {
                 GameObject XP = Instantiate(xp, transform.position, transform.rotation);
                 XP.GetComponent<Item>().count = xpRewardCount;
+                xpCount++;
             }
         }
 

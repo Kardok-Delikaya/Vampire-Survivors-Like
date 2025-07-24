@@ -20,10 +20,12 @@ namespace VSLike
         {
             terrainTiles = new GameObject[terrainTileHorizontalCount, terrainTileVerticalCount];
         }
+
         void Start()
         {
             UpdateTilesOnScreen();
         }
+
         void Update()
         {
             playerTilePosition.x = (int)(playerTransform.position.x / 20);
