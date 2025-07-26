@@ -6,7 +6,7 @@ namespace VSLike
 {
     public class Enemy : MonoBehaviour, IDamage
     {
-        Player player;
+        PlayerManager player;
         Rigidbody2D rb;
         GameManager gameManager;
         SpriteRenderer sprite;
@@ -27,7 +27,7 @@ namespace VSLike
         void Awake()
         {
             sprite=GetComponent<SpriteRenderer>();
-            player = FindAnyObjectByType<Player>();
+            player = FindAnyObjectByType<PlayerManager>();
             gameManager = FindAnyObjectByType<GameManager>();
             spawner=FindAnyObjectByType<Spawner>();
             rb = GetComponent<Rigidbody2D>();

@@ -6,7 +6,7 @@ namespace VSLike
 {
     public class LittleFriend : Weapons
     {
-        Player player;
+        PlayerManager player;
         int vertical;
         int horizontal=1;
         int bulletCount;
@@ -16,7 +16,7 @@ namespace VSLike
 
         private void Start()
         {
-            player = GetComponentInParent<Player>();
+            player = GetComponentInParent<PlayerManager>();
         }
 
         public override void Attack()

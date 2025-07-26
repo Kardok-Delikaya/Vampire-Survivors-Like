@@ -10,6 +10,7 @@ namespace VSLike
     public class GameManager : MonoBehaviour
     {
         Spawner spawner;
+        PlayerManager player;
         int killCount;
         int targetKillCount;
         int goldCount;
@@ -24,7 +25,7 @@ namespace VSLike
         [SerializeField] TextMeshProUGUI levelText;
         [SerializeField] TextMeshProUGUI killText;
         [SerializeField] TextMeshProUGUI goldCountText;
-        [SerializeField] GameObject deadScreen;
+        [SerializeField] GameObject deathMenu;
         [SerializeField] GameObject pauseMenu;
         [SerializeField] GameObject levelMenu;
 
@@ -41,18 +42,18 @@ namespace VSLike
         [SerializeField] List<UpgradeButton> upgradeButtons;
         [SerializeField] WeaponManager weaponManager;
         [SerializeField] PasiveItems pasiveItems;
-        [SerializeField] Player character;
-        [SerializeField] GameObject characterTable;
-        public List<TextMeshProUGUI> characterSpecs;
+        [SerializeField] GameObject playerSpecPanel;
+        public List<TextMeshProUGUI> playerSpecTexts;
        
-        void Start()
+        void Awake()
         {
+            spawner = GetComponent<Spawner>();
+            player = FindAnyObjectByType<PlayerManager>();
             goldCount=PlayerPrefs.GetInt("Gold_Count");
             goldCountText.text = goldCount + "";
             maxXp = 5f;
             targetKillCount = 50;
             Time.timeScale = 1;
-            spawner = GetComponent<Spawner>();
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
             CleanButtons();
@@ -98,38 +99,38 @@ namespace VSLike
             {
                 case 50:
                     rewardMessage.text = "+10 Shield +" + i + " gold.";
-                    character.shield += 10;
-                    character.Message("+10", Color.blue);
+                    player.shield += 10;
+                    player.Message("+10", Color.blue);
                     targetKillCount += 100;
                     break;
                 case 150:
                     rewardMessage.text = "+15 Shield +" + i + " gold.";
-                    character.shield += 15;
-                    character.Message("+15", Color.blue);
+                    player.shield += 15;
+                    player.Message("+15", Color.blue);
                     targetKillCount += 150;
                     break;
                 case 300:
                     rewardMessage.text = "+20 Shield +" + i + " gold.";
-                    character.shield += 20;
-                    character.Message("+20", Color.blue);
+                    player.shield += 20;
+                    player.Message("+20", Color.blue);
                     targetKillCount += 200;
                     break;
                 case 500:
                     rewardMessage.text = "+25 Shield +" + i + " gold.";
-                    character.shield += 25;
-                    character.Message("+25", Color.blue);
+                    player.shield += 25;
+                    player.Message("+25", Color.blue);
                     targetKillCount += 250;
                     break;
                 default:
                     rewardMessage.text = "+25 Shield +" + i + " gold.";
-                    character.shield += 25;
-                    character.Message("+25", Color.blue);
+                    player.shield += 25;
+                    player.Message("+25", Color.blue);
                     targetKillCount += 500;
                     break;
             }
 
             goldCount += i;
-            character.ShieldValue();
+            player.ShieldValue();
             goldCountText.text = goldCount + "";
             PlayerPrefs.SetInt("Gold_Count", goldCount);
             Pause(0);
@@ -172,8 +173,7 @@ namespace VSLike
                 maxXp += 16;
             }
 
-            spawner.BossSpawn();
-            spawner.level++;
+            spawner.CheckForBossSpawn();
         }
 
         public void GetGold()
@@ -182,12 +182,12 @@ namespace VSLike
             goldCount += rewardGoldCount;
             goldCountText.text = goldCount + "";
             PlayerPrefs.SetInt("Gold_Count", goldCount);
-            character.Message("+" + rewardGoldCount, Color.yellow);
+            player.Message("+" + rewardGoldCount, Color.yellow);
         }
 
         public void Death()
         {
-            deadScreen.SetActive(true);
+            deathMenu.SetActive(true);
             Time.timeScale = 0;
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
@@ -255,6 +255,11 @@ namespace VSLike
             receivedUpgrades.Add(upgradeData);
             upgrades.Remove(upgradeData);
             CloseMenu();
+
+            if (xp >= maxXp)
+            {
+                LevelUp();
+            }
         }
 
         public List<UpgradeData> GetUpgrades(int count)
@@ -321,7 +326,7 @@ namespace VSLike
             }
             else
             {
-                characterTable.SetActive(false);
+                playerSpecPanel.SetActive(false);
                 Cursor.visible = false;
                 Cursor.lockState = CursorLockMode.Locked;
             }
@@ -357,14 +362,12 @@ namespace VSLike
 
         void CharacterSpecs()
         {
-            characterSpecs[0].text = character.maxHealth + "";
-            characterSpecs[1].text = character.health + "";
-            characterSpecs[2].text = character.shield + "";
-            characterSpecs[3].text = character.armor + "";
-            characterSpecs[4].text = character.speed + "";
-            characterSpecs[5].text = character.regenerate + "";
-            characterSpecs[6].text = character.magnet + "";
-            characterTable.SetActive(true);
+            playerSpecTexts[0].text = player.maxHealth + "";
+            playerSpecTexts[1].text = player.armor + "";
+            playerSpecTexts[2].text = player.speed + "";
+            playerSpecTexts[3].text = player.regenerate + "";
+            playerSpecTexts[4].text = player.magnet + "";
+            playerSpecPanel.SetActive(true);
         }
     }
 }

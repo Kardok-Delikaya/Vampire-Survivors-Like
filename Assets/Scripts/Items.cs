@@ -34,7 +34,7 @@ namespace VSLike
             values = new ItemValues();
             upgrades = new List<UpgradeData>();
         }
-        public void Equip(Player character)
+        public void Equip(PlayerManager character)
         {
             character.maxHealth += values.maxHealth;
             character.armor += values.armor;

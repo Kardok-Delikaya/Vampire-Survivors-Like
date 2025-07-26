@@ -8,12 +8,12 @@ namespace VSLike
     public class PasiveItems : MonoBehaviour
     {
         [SerializeField] List<Items> items;
-        Player character;
+        PlayerManager character;
         [SerializeField] GameManager gameManager;
 
         void Awake()
         {
-            character = GetComponent<Player>();
+            character = GetComponent<PlayerManager>();
         }
         public void Equip(Items item)
         {

@@ -13,7 +13,7 @@ namespace VSLike
 
         private void Start()
         {
-            player = FindAnyObjectByType<Player>().transform;
+            player = FindAnyObjectByType<PlayerManager>().transform;
         }
 
         void FixedUpdate()
@@ -26,7 +26,7 @@ namespace VSLike
 
                 if (id == 0)
                 {
-                    FindAnyObjectByType<Player>().xpCount--;
+                    FindAnyObjectByType<PlayerManager>().xpCount--;
                 }
             }
         }

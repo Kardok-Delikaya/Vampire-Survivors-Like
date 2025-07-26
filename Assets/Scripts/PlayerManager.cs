@@ -5,28 +5,28 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 namespace VSLike
 {
-    public class Player : MonoBehaviour
+    public class PlayerManager : MonoBehaviour
     {
         Animator anim;
         Rigidbody2D rb;
         [HideInInspector] public SpriteRenderer sprite;
         [HideInInspector] public Vector2 pos = new Vector2(0, 0);
-        float waitingTimer;
-
+        
         [Header("Character Stats")]
         public int maxHealth;
-        public int health;
         public int shield;
         public float armor;
         public float speed;
         public int regenerate;
         public float magnet;
         [SerializeField] Items persistantUpgrade;
+        int health;
+        float healthRegenerateTimer;
 
         [Header("HUD")]
         [SerializeField] GameObject healthBar;
         [SerializeField] GameObject shieldBar;
-        [SerializeField] GameObject damageMessage;
+        [SerializeField] GameObject damagePopUp;
 
         [Header("XP")]
         public int xpCount;
@@ -40,7 +40,6 @@ namespace VSLike
             health = maxHealth;
             anim = GetComponent<Animator>();
             rb = GetComponent<Rigidbody2D>();
-            pos = new Vector3();
         }
 
         private void FixedUpdate()
@@ -145,7 +144,7 @@ namespace VSLike
                 shield = 0;
             }
 
-            FindAnyObjectByType<GameManager>().characterSpecs[1].text = shield + "";
+            FindAnyObjectByType<GameManager>().playerSpecTexts[1].text = shield + "";
             Message("-" + tempDamage, Color.blue);
             ShieldValue();
         }
@@ -181,7 +180,7 @@ namespace VSLike
 
         public void Message(string yazi, Color renk)
         {
-            GameObject HasarMesaj = Instantiate(damageMessage, transform.position, transform.rotation) as GameObject;
+            GameObject HasarMesaj = Instantiate(damagePopUp, transform.position, transform.rotation) as GameObject;
             HasarMesaj.transform.parent = null;
             HasarMesaj.GetComponentInChildren<TMPro.TextMeshPro>().text = yazi;
             HasarMesaj.GetComponentInChildren<TMPro.TextMeshPro>().color = renk;
@@ -189,17 +188,17 @@ namespace VSLike
 
         void Regenerate()
         {
-            if (waitingTimer <= 0)
+            if (healthRegenerateTimer <= 0)
             {
                 if (health < maxHealth)
                 {
                     GetHealth(regenerate);
-                    waitingTimer = 5;
+                    healthRegenerateTimer = 5;
                 }
             }
             else
             {
-                waitingTimer -= Time.fixedDeltaTime;
+                healthRegenerateTimer -= Time.fixedDeltaTime;
             }
         }
 

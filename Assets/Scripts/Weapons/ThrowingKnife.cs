@@ -6,7 +6,7 @@ namespace VSLike
 {
     public class ThrowingKnife : Weapons
     {
-        Player player;
+        PlayerManager player;
         int knifeCount;
         int vertical;
         int horizontal=1;
@@ -16,7 +16,7 @@ namespace VSLike
 
         private void Start()
         {
-            player = GetComponentInParent<Player>();
+            player = GetComponentInParent<PlayerManager>();
         }
 
         public override void Attack()

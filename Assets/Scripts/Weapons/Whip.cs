@@ -7,13 +7,13 @@ namespace VSLike
     public class Whip : Weapons
     {
         int attackCount;
-        Player player;
+        PlayerManager player;
         [SerializeField] GameObject[] whips;
         [SerializeField] List<UpgradeData> upgrades;
 
         void Start()
         {
-            player = GetComponentInParent<Player>();
+            player = GetComponentInParent<PlayerManager>();
         }
 
         public override void Attack()

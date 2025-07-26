@@ -7,42 +7,43 @@ namespace VSLike
     public class Spawner : MonoBehaviour
     {
         Transform player;
+        GameManager gameManager;
 
         [Header("Enemy Spawn")]
         public int enemyCount;
-        [SerializeField] GameObject[] enemy;
-        [SerializeField] float[] enemyTime;
-        [SerializeField] float[] enemyMaxTime;
-        [SerializeField] int[] enemyLevel;
-        [SerializeField] int[] enemyMaxLevel;
+        [SerializeField] GameObject[] enemies;
+        [SerializeField] float[] enemySpawnTimer;
+        [SerializeField] float[] enemySpawnCoolDown;
+        [SerializeField] int[] enemySpawnStartLevel;
+        [SerializeField] int[] enemySpawnMaxLevel;
 
         [Header("Boss Spawn")]
-        [SerializeField] GameObject[] boss;
-        [SerializeField] int[] bossLevel;
+        [SerializeField] GameObject[] bosses;
+        [SerializeField] int[] bossSpawnLevel;
         [SerializeField] Vector2 spawnArea;
-        public int level;
 
         void Start()
         {
-            player = GameObject.FindGameObjectWithTag("Player").transform;
+            gameManager=GetComponent<GameManager>();
+            player = FindAnyObjectByType<PlayerManager>().transform;
         }
 
         void FixedUpdate()
         {
             if (enemyCount < 100)
             {
-                for (int i = 0; i < enemy.Length; i++)
+                for (int i = 0; i < enemies.Length; i++)
                 {
-                    if (enemyLevel[i] <= level && enemyMaxLevel[i] > level)
+                    if (enemySpawnStartLevel[i] <= gameManager.level && enemySpawnMaxLevel[i] > gameManager.level)
                     {
-                        if (enemyTime[i] <= 0f)
+                        if (enemySpawnTimer[i] <= 0f)
                         {
                             SpawnEnemy(i);
-                            enemyTime[i] = enemyMaxTime[i];
+                            enemySpawnTimer[i] = enemySpawnCoolDown[i];
                         }
                         else
                         {
-                            enemyTime[i] -= Time.fixedDeltaTime;
+                            enemySpawnTimer[i] -= Time.fixedDeltaTime;
                         }
                     }
                 }
@@ -52,20 +53,20 @@ namespace VSLike
         {
             Vector3 position = GenerateRandomPosition();
             position += player.position;
-            GameObject newEnemy = Instantiate(enemy[i]);
+            GameObject newEnemy = Instantiate(enemies[i]);
             newEnemy.transform.position = position;
             enemyCount++;
         }
-        public void BossSpawn()
+        public void CheckForBossSpawn()
         {
             Vector3 position = GenerateRandomPosition();
             position += player.position;
 
-            for (int i = 0; i < boss.Length; i++)
+            for (int i = 0; i < bosses.Length; i++)
             {
-                if (level == bossLevel[i])
+                if (gameManager.level == bossSpawnLevel[i])
                 {
-                    GameObject newEnemy = Instantiate(boss[i]);
+                    GameObject newEnemy = Instantiate(bosses[i]);
                     newEnemy.transform.position = position;
                     break;
                 }

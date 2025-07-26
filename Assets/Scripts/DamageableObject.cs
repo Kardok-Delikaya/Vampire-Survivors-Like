@@ -11,7 +11,7 @@ namespace VSLike
         [SerializeField] GameObject gold;
         private void Start()
         {
-            player = FindAnyObjectByType<Player>().transform;
+            player = FindAnyObjectByType<PlayerManager>().transform;
         }
 
         void FixedUpdate()
