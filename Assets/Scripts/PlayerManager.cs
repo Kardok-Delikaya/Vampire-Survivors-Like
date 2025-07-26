@@ -106,12 +106,15 @@ namespace VSLike
                 case 2:
                     FindAnyObjectByType<GameManager>().GetGold();
                     break;
+                default:
+                    break;
             }
         }
 
         public void TakeDamage(float damage)
         {
             if (damage <= 0) damage = 1;
+
             if (shield > 0)
             {
                 Shield(ref damage);
