@@ -254,12 +254,11 @@ namespace VSLike
             }
             receivedUpgrades.Add(upgradeData);
             upgrades.Remove(upgradeData);
-            CloseMenu();
 
             if (xp >= maxXp)
-            {
                 LevelUp();
-            }
+            else
+                CloseMenu();
         }
 
         public List<UpgradeData> GetUpgrades(int count)
@@ -318,6 +317,7 @@ namespace VSLike
         void Pause(int i)
         {
             Time.timeScale = i;
+
             if (i == 0)
             {
                 Cursor.visible = true;
