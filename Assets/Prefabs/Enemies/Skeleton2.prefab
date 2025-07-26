@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -6356745067159726661}
   - component: {fileID: 8649609138421570073}
   - component: {fileID: 6289630866569727940}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Skeleton2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -149,7 +149,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4045153246861629789}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63310a96baf26d24baafabea7324e31c, type: 3}
+  m_Script: {fileID: 11500000, guid: dc47946f054723544ad6d66095e08231, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   health: 150
@@ -157,7 +157,7 @@ MonoBehaviour:
   damage: 9
   damagePopUp: {fileID: 744951814735632710, guid: 49b2860cdfd96d44ab6c6b6a11f2f028, type: 3}
   xpRewardCount: 50
-  canBePushed: 1
+  canBePushed: 0
 --- !u!61 &6289630866569727940
 BoxCollider2D:
   m_ObjectHideFlags: 0

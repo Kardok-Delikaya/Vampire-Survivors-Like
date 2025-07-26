@@ -9,6 +9,7 @@ namespace VSLike
     {
         public WeaponData weaponData;
         public WeaponValues weaponValues;
+        [SerializeField] protected LayerMask damageableLayer;
         float timer;
         public void FixedUpdate()
         {

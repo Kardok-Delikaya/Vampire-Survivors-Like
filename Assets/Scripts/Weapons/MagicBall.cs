@@ -13,6 +13,7 @@ namespace VSLike
         int damage;
         float speed;
         float stayTime;
+        LayerMask damageableLayer;
 
         void FixedUpdate()
         {
@@ -20,31 +21,26 @@ namespace VSLike
             if (stayTime < 0)
                 Destroy(gameObject);
             
-
             transform.position += transform.up * speed * Time.deltaTime;
 
-            Collider2D[] enemies = Physics2D.OverlapCircleAll(transform.position, .3f);
+            Collider2D[] damageableObjects = Physics2D.OverlapCircleAll(transform.position, .3f,damageableLayer);
 
-            if (enemies.Length!=0)
+            if (damageableObjects.Length != 0)
             {
-                foreach (Collider2D c in enemies)
+                foreach (Collider2D objects in damageableObjects)
                 {
-                    if (c.GetComponent<IDamage>() != null)
-                    {
-                        IDamage obje = c.GetComponent<IDamage>();
-                        if (obje != null && !hittedEnemies.Contains(c))
-                        {
-                            hittedEnemies.Add(c);
-                            obje.TakeDamage(damage, 1);
-                        }
+                    IDamage damageable = objects.GetComponent<IDamage>();
 
+                    if (!hittedEnemies.Contains(objects))
+                    {
+                        hittedEnemies.Add(objects);
+                        damageable.TakeDamage(damage, 1);
                     }
                 }
             }
             
             if (hasEvolved)
                 CheckLines();
-            
         }
 
         void CheckLines()
@@ -74,12 +70,13 @@ namespace VSLike
                 hittedEnemies.Clear();
             }
         }
-        public void Equalize(int damage, int health, float stayingTime, float speed, bool hasEvolved)
+        public void Equalize(int damage, int health, float stayingTime, float speed, bool hasEvolved, LayerMask damageableLayer)
         {
             this.damage = damage;
             this.stayTime = stayingTime;
             this.speed = speed;
             this.hasEvolved = hasEvolved;
+            this.damageableLayer = damageableLayer;
         }
     }
 }

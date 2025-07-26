@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace VSLike
 {
-    public class Item : MonoBehaviour
+    public class LootableObject : MonoBehaviour
     {
         Transform player;
 
         public int id;
-        public int count;
+        [HideInInspector] public int count;
 
         private void Start()
         {

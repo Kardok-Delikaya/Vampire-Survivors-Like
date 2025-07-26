@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5393804221955499260}
   - component: {fileID: 5536525660438375530}
   - component: {fileID: 5393804221955499261}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BossSkeleton2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -195,12 +195,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5393804221955499256}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63310a96baf26d24baafabea7324e31c, type: 3}
+  m_Script: {fileID: 11500000, guid: dc47946f054723544ad6d66095e08231, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   health: 2000
   speed: 4
   damage: 30
   damagePopUp: {fileID: 744951814735632710, guid: 49b2860cdfd96d44ab6c6b6a11f2f028, type: 3}
-  xpRewardCount: 2500
+  xpRewardCount: 250
   canBePushed: 0

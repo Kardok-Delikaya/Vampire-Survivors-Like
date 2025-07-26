@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace VSLike
 {
-    public class Enemy : MonoBehaviour, IDamage
+    public class EnemyManager : MonoBehaviour, IDamage
     {
         PlayerManager player;
         Rigidbody2D rb;
@@ -95,7 +95,7 @@ namespace VSLike
 
             if (health <= 0)
             {
-                Death();
+                HandleDeath();
                 return;
             }
 
@@ -115,9 +115,9 @@ namespace VSLike
             beingPushed = false;
         }
 
-        void Death()
+        void HandleDeath()
         {
-            gameManager.Kill();
+            gameManager.HandleKill();
             player.SpawnXP(transform, xpRewardCount);
             spawner.enemyCount--;
             Destroy(gameObject);

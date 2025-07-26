@@ -38,14 +38,15 @@ namespace VSLike
         {
             bulletCount--;
             GameObject IBullet = Instantiate(bullet, transform);
-            IBullet.GetComponent<Projectile>().Equalize(weaponValues.damage, weaponValues.durability, weaponValues.stayTime, weaponValues.speed, false);
-            StraightShoot(IBullet);
+            IBullet.GetComponent<Projectile>().Equalize(weaponValues.damage, weaponValues.durability, weaponValues.stayTime, weaponValues.speed, false, damageableLayer);
+            ShootAtMoveDirection(IBullet);
             IBullet.transform.eulerAngles = new Vector3(0, 0, Random.Range(IBullet.transform.eulerAngles.z - 15, IBullet.transform.eulerAngles.z + 15));
+            
             if (bulletCount > 0)
             {
                 Invoke("BulletThrow", 0.05f);
             }
-            else if (bombCount == 1)
+            else if (bombCount > 0)
             {
                 Invoke("BombThrow", 0.15f);
             }
@@ -54,11 +55,9 @@ namespace VSLike
         void BombThrow()
         {
             bombCount--;
-            GameObject Ibomba = Instantiate(bomb, transform);
-            Ibomba.GetComponent<Bomb>().damage = weaponValues.damage * 2;
-            Ibomba.GetComponent<Bomb>().speed = (int)weaponValues.speed * 2;
-            Ibomba.GetComponent<Bomb>().stayTime = weaponValues.stayTime;
-            StraightShoot(Ibomba);
+            GameObject _bomb = Instantiate(bomb, transform);
+            _bomb.GetComponent<Projectile>().Equalize(weaponValues.damage*2, weaponValues.durability, weaponValues.stayTime, weaponValues.speed*2, false, damageableLayer);
+            ShootAtMoveDirection(_bomb);
 
             if (bulletCount > 0)
             {
@@ -66,7 +65,7 @@ namespace VSLike
             }
         }
 
-        void StraightShoot(GameObject projectile)
+        void ShootAtMoveDirection(GameObject projectile)
         {
             if (player.pos.y > .2)
             {

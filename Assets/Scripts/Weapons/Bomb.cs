@@ -4,11 +4,12 @@ using UnityEngine;
 
 namespace VSLike
 {
-    public class Bomb : MonoBehaviour
+    public class Bomb : MonoBehaviour, IThrowable
     {
-        public int damage;
-        public int speed;
-        public float stayTime;
+        int damage;
+        float speed;
+        float stayTime;
+        LayerMask damageableLayer;
 
         void FixedUpdate()
         {
@@ -45,6 +46,15 @@ namespace VSLike
                 }
             }
             Destroy(gameObject);
+        }
+
+        public void Equalize(int damage, int health, float stayTime, float speed, bool evoltion, LayerMask damageableLayer)
+        {
+            this.damage = damage;
+            this.stayTime = stayTime;
+            this.speed = speed;
+            this.damageableLayer = damageableLayer;
+            throw new System.NotImplementedException();
         }
     }
 }

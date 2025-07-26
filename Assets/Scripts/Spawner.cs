@@ -51,6 +51,7 @@ namespace VSLike
                 }
             }
         }
+
         private void SpawnEnemy(int i)
         {
             Vector3 position = GenerateRandomPosition();

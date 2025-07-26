@@ -56,7 +56,7 @@ namespace VSLike
             Time.timeScale = 1;
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
-            CleanButtons();
+            ClearButtons();
             AddStartWeapon(1);
             AddStartWeapon(1);
             AddStartWeapon(1);
@@ -71,16 +71,16 @@ namespace VSLike
             {
                 if (pauseMenu.activeSelf || rewardMenu.activeSelf)
                 {
-                    CloseMenu();
+                    ClosePauseMenu();
                 }
                 else if (!levelMenu.activeSelf)
                 {
-                    OpenMenu();
+                    OpenPauseMenu();
                 }
             }
         }
 
-        public void Kill()
+        public void HandleKill()
         {
             killCount++;
             killText.text = killCount + "";
@@ -152,7 +152,7 @@ namespace VSLike
         {
             if (upgrades.Count != 0)
             {
-                CleanButtons();
+                ClearButtons();
                 OpenLevelMenu();
             }
 
@@ -203,7 +203,7 @@ namespace VSLike
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
-        public void CloseMenu()
+        public void ClosePauseMenu()
         {
             pauseMenu.SetActive(false);
             levelMenu.SetActive(false);
@@ -211,7 +211,7 @@ namespace VSLike
             Pause(1);
         }
 
-        void OpenMenu()
+        void OpenPauseMenu()
         {
             pauseMenu.SetActive(true);
             Pause(0);
@@ -225,14 +225,14 @@ namespace VSLike
             {
                 case UpgradeType.OpenItem:
                     pasiveItems.Equip(upgradeData.item);
-                    ShowSprite(upgradeData);
+                    AddSpriteToUpgradeSprites(upgradeData);
                     break;
                 case UpgradeType.ItemValue:
                     pasiveItems.ItemUpgrade(upgradeData);
                     break;
                 case UpgradeType.OpenWeapon:
                     weaponManager.AddWeapon(upgradeData.weaponData);
-                    ShowSprite(upgradeData);
+                    AddSpriteToUpgradeSprites(upgradeData);
                     break;
                 case UpgradeType.WeaponValue:
                     weaponManager.UpgradeWeapon(upgradeData);
@@ -258,7 +258,7 @@ namespace VSLike
             if (xp >= maxXp)
                 LevelUp();
             else
-                CloseMenu();
+                ClosePauseMenu();
         }
 
         public List<UpgradeData> GetUpgrades(int count)
@@ -284,7 +284,7 @@ namespace VSLike
             return UpgradeList;
         }
 
-        void CleanButtons()
+        void ClearButtons()
         {
             for (int i = 0; i < upgradeButtons.Count; i++)
             {
@@ -295,7 +295,7 @@ namespace VSLike
 
         void OpenLevelMenu()
         {
-            if (chosedUpgrades == null) { chosedUpgrades = new List<UpgradeData>(); }
+            if (chosedUpgrades == null) chosedUpgrades = new List<UpgradeData>();
             chosedUpgrades.Clear();
             chosedUpgrades.AddRange(GetUpgrades(3));
 
@@ -332,7 +332,7 @@ namespace VSLike
             }
         }
 
-        void ShowSprite(UpgradeData upgradeData)
+        void AddSpriteToUpgradeSprites(UpgradeData upgradeData)
         {
             for (int i = 0; i < upgradePictures.Count; i++)
             {
@@ -348,7 +348,7 @@ namespace VSLike
         void AddStartWeapon(int i)
         {
             weaponManager.AddWeapon(upgrades[i].weaponData);
-            ShowSprite(upgrades[i]);
+            AddSpriteToUpgradeSprites(upgrades[i]);
             receivedUpgrades.Add(upgrades[i]);
             upgrades.Remove(upgrades[i]);
         }
@@ -356,7 +356,7 @@ namespace VSLike
         public void AddWeapon(UpgradeData upgradeData)
         {
             weaponManager.AddWeapon(upgradeData.weaponData);
-            ShowSprite(upgradeData);
+            AddSpriteToUpgradeSprites(upgradeData);
             receivedUpgrades.Add(upgradeData);
         }
 

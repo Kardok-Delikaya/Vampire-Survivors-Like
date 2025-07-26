@@ -22,13 +22,13 @@ namespace VSLike
         public override void Attack()
         {
             knifeCount = weaponValues.count;
-            KnifeThrow();
+            ThrowKnivesToMoveDirection();
         }
 
-        void KnifeThrow()
+        void ThrowKnivesToMoveDirection()
         {
             GameObject spawnedKnife = Instantiate(knife, new Vector3(transform.position.x + Random.Range(-.5f, .5f), transform.position.y + Random.Range(-.75f, 1.25f), 0), transform.rotation);
-            spawnedKnife.GetComponent<IThrowable>().Equalize(weaponValues.damage, weaponValues.durability, weaponValues.stayTime, weaponValues.speed, false);
+            spawnedKnife.GetComponent<IThrowable>().Equalize(weaponValues.damage, weaponValues.durability, weaponValues.stayTime, weaponValues.speed, false, damageableLayer);
 
             if (player.pos.y > .2)
             {
@@ -72,7 +72,7 @@ namespace VSLike
 
             if (knifeCount > 0)
             {
-                Invoke("KnifeThrow", .1f);
+                Invoke("ThrowKnivesToMoveDirection", .1f);
             }
         }
 

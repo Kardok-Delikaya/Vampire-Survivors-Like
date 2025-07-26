@@ -9,9 +9,10 @@ namespace VSLike
     {
         Animator anim;
         Rigidbody2D rb;
+        GameManager gameManager;
         [HideInInspector] public SpriteRenderer sprite;
         [HideInInspector] public Vector2 pos = new Vector2(0, 0);
-        
+
         [Header("Character Stats")]
         public int maxHealth;
         public int shield;
@@ -31,11 +32,15 @@ namespace VSLike
         [Header("XP")]
         public int xpCount;
         [SerializeField] GameObject xp;
-        public Item spawnedRedXP;
+        public LootableObject spawnedRedXP;
+
+        [Header("Layers")]
+        [SerializeField] LayerMask lootLayer;
 
         void Start()
         {
-            sprite= GetComponent<SpriteRenderer>();
+            gameManager=FindAnyObjectByType<GameManager>();
+            sprite = GetComponent<SpriteRenderer>();
             GetPersistantUpgrades();
             health = maxHealth;
             anim = GetComponent<Animator>();
@@ -44,7 +49,7 @@ namespace VSLike
 
         private void FixedUpdate()
         {
-            GetItems();
+            CollectNearbyLoots();
 
             if (regenerate > 0)
                 Regenerate();
@@ -69,42 +74,40 @@ namespace VSLike
             anim.SetFloat("Speed", pos.sqrMagnitude);
         }
 
-        void GetItems()
+        void CollectNearbyLoots()
         {
-            Collider2D[] objs;
-            objs = Physics2D.OverlapCircleAll(transform.position, magnet);
-            if (objs.Length > 0)
+            Collider2D[] loots;
+            loots = Physics2D.OverlapCircleAll(transform.position, magnet, lootLayer);
+
+            if (loots.Length > 0)
             {
-                for (int i = 0; i < objs.Length; i++)
+                for (int i = 0; i < loots.Length; i++)
                 {
-                    if (objs[i].GetComponent<Item>() != null)
+                    LootableObject loot = loots[i].GetComponent<LootableObject>();
+                    loot.transform.position = Vector3.MoveTowards(loot.transform.position, transform.position, 0.1f * magnet);
+
+                    if (Vector3.Distance(loots[i].transform.position, transform.position) < .3f)
                     {
-                        Item obj = objs[i].GetComponent<Item>();
-                        Vector3 direction = (transform.position - objs[i].transform.position).normalized;
-                        objs[i].GetComponent<Rigidbody2D>().linearVelocity = direction * 20;
-                        if (Vector3.Distance(objs[i].transform.position, transform.position) < .3f)
-                        {
-                            AddItem(obj.id, obj.count);
-                            Destroy(obj.gameObject);
-                        }
+                        AddLoot(loot.id, loot.count);
+                        Destroy(loot.gameObject);
                     }
                 }
             }
         }
 
-        void AddItem(int id, int count)
+        void AddLoot(int id, int count)
         {
             switch (id)
             {
                 case 0:
-                    FindAnyObjectByType<GameManager>().GetXP(count);
+                    gameManager.GetXP(count);
                     xpCount--;
                     break;
                 case 1:
-                    GetHealth(count);
+                    GetHealth(10);
                     break;
                 case 2:
-                    FindAnyObjectByType<GameManager>().GetGold();
+                    gameManager.GetGold();
                     break;
                 default:
                     break;
@@ -119,14 +122,18 @@ namespace VSLike
             {
                 Shield(ref damage);
             }
+
             if (damage > 0)
             {
                 Armor(ref damage);
+
                 health -= (int)damage;
+
                 if (health <= 0)
                 {
-                    FindAnyObjectByType<GameManager>().Death();
+                    gameManager.Death();
                 }
+
                 healthBar.transform.localScale = new Vector3((float)health / maxHealth, 1, 1);
                 Message("-" + (int)damage, Color.red);
             }
@@ -147,17 +154,18 @@ namespace VSLike
                 shield = 0;
             }
 
-            FindAnyObjectByType<GameManager>().playerSpecTexts[1].text = shield + "";
+            gameManager.playerSpecTexts[1].text = shield + "";
             Message("-" + tempDamage, Color.blue);
             ShieldValue();
         }
 
-        void Armor(ref float hasar)
+        void Armor(ref float damage)
         {
-            hasar -= armor;
-            if (hasar < 1)
+            damage -= armor;
+
+            if (damage < 1)
             {
-                hasar = 1;
+                damage = 1;
             }
         }
 
@@ -165,28 +173,28 @@ namespace VSLike
         {
             shieldBar.transform.localScale = new Vector3((float)shield / 100, 1, 1);
         }
-        
-        public void GetHealth(int x)
+
+        public void GetHealth(int healAmount)
         {
-            health += x;
+            health += healAmount;
             if (health > maxHealth) health = maxHealth;
             healthBar.transform.localScale = new Vector3((float)health / maxHealth, 1, 1);
-            Message("+" + x, Color.green);
+            Message("+" + healAmount, Color.green);
         }
 
-        public void GetSield(int x)
+        public void GetSield(int shieldAmount)
         {
-            shield += x;
+            shield += shieldAmount;
             if (shield > 100) shield = 100;
 
         }
 
-        public void Message(string yazi, Color renk)
+        public void Message(string message, Color color)
         {
-            GameObject HasarMesaj = Instantiate(damagePopUp, transform.position, transform.rotation) as GameObject;
-            HasarMesaj.transform.parent = null;
-            HasarMesaj.GetComponentInChildren<TMPro.TextMeshPro>().text = yazi;
-            HasarMesaj.GetComponentInChildren<TMPro.TextMeshPro>().color = renk;
+            GameObject messagePopUp = Instantiate(damagePopUp, transform.position, transform.rotation) as GameObject;
+            messagePopUp.transform.parent = null;
+            messagePopUp.GetComponentInChildren<TMPro.TextMeshPro>().text = message;
+            messagePopUp.GetComponentInChildren<TMPro.TextMeshPro>().color = color;
         }
 
         void Regenerate()
@@ -205,7 +213,7 @@ namespace VSLike
             }
         }
 
-        public void SpawnXP(Transform transform,int xpRewardCount)
+        public void SpawnXP(Transform transform, int xpRewardCount)
         {
             if (xpCount > 50)
             {
@@ -216,16 +224,16 @@ namespace VSLike
                 else
                 {
                     GameObject XP = Instantiate(xp, transform.position, transform.rotation);
-                    XP.GetComponent<Item>().count = xpRewardCount;
+                    XP.GetComponent<LootableObject>().count = xpRewardCount;
                     XP.GetComponent<SpriteRenderer>().color = Color.red;
-                    spawnedRedXP = XP.GetComponent<Item>();
+                    spawnedRedXP = XP.GetComponent<LootableObject>();
                     xpCount++;
                 }
             }
             else
             {
                 GameObject XP = Instantiate(xp, transform.position, transform.rotation);
-                XP.GetComponent<Item>().count = xpRewardCount;
+                XP.GetComponent<LootableObject>().count = xpRewardCount;
                 xpCount++;
             }
         }
@@ -233,10 +241,10 @@ namespace VSLike
         void GetPersistantUpgrades()
         {
             maxHealth += persistantUpgrade.values.maxHealth;
-            armor+=persistantUpgrade.values.armor;
-            speed+=persistantUpgrade.values.speed;
-            regenerate+=persistantUpgrade.values.regenerate;
-            magnet+=persistantUpgrade.values.magnet;
+            armor += persistantUpgrade.values.armor;
+            speed += persistantUpgrade.values.speed;
+            regenerate += persistantUpgrade.values.regenerate;
+            magnet += persistantUpgrade.values.magnet;
         }
     }
 }

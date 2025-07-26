@@ -6,64 +6,70 @@ namespace VSLike
 {
     public class Books : Weapons
     {
-        float time;
-        float stayingTime;
-        float destroyTime;
+        float attackCoolDown;
+        float stayTime;
+        float rotationTimer;
         int bookCount = 1;
         bool active;
         [SerializeField] Sprite sprite;
-        [SerializeField] GameObject[] books;
+        [SerializeField] Book[] books;
         [SerializeField] List<UpgradeData> newUpgrades;
+
+        private void Awake()
+        {
+            for (int i = 0; i < books.Length; i++)
+                books[i].damageableLayer = damageableLayer;
+        }
         private new void FixedUpdate()
         {
             transform.Rotate(Vector3.forward * Time.deltaTime * -180 * weaponValues.speed);
-            time -= Time.fixedDeltaTime;
+            attackCoolDown -= Time.fixedDeltaTime;
 
-            if (time <= 0f)
+            if (attackCoolDown <= 0f)
             {
                 Attack();
             }
 
-            if (stayingTime >= 0f)
+            if (stayTime >= 0f)
             {
-                stayingTime -= Time.fixedDeltaTime;
+                stayTime -= Time.fixedDeltaTime;
             }
             else if (active)
             {
                 active = false;
                 for (int i = 0; i < bookCount; i++)
                 {
-                    books[i].GetComponent<Book>().active = false;
-                    books[i].GetComponent<Book>().backTime = 20;
+                    books[i].active = false;
+                    books[i].backTime = 20;
                 }
             }
 
-            if (destroyTime > 0)
+            if (rotationTimer > 0)
             {
-                destroyTime -= Time.fixedDeltaTime;
+                rotationTimer -= Time.fixedDeltaTime;
             }
             else
             {
                 for (int i = 0; i < weaponValues.count; i++)
                 {
-                    books[i].GetComponent<Book>().enemiesHasBeenShooted.Clear();
+                    books[i].enemiesHasBeenHitted.Clear();
                 }
-                destroyTime = 1f / weaponValues.speed;
+                rotationTimer = 1f / weaponValues.speed;
             }
         }
         public override void Attack()
         {
             transform.localScale = new Vector3(weaponValues.area, weaponValues.area, 1);
             bookCount = weaponValues.count;
-            stayingTime = weaponValues.stayTime;
-            time = weaponValues.timer;
+            stayTime = weaponValues.stayTime;
+            attackCoolDown = weaponValues.timer;
             active = true;
             for (int i = 0; i < bookCount; i++)
             {
-                books[i].GetComponent<Book>().active = true;
-                books[i].GetComponent<Book>().damage = weaponValues.damage;
-                books[i].GetComponent<Book>().area = weaponValues.area;
-                books[i].GetComponent<Book>().exitTime = 20;
+                books[i].active = true;
+                books[i].damage = weaponValues.damage;
+                books[i].area = weaponValues.area;
+                books[i].exitTime = 20;
             }
         }
         public override void Evolution()

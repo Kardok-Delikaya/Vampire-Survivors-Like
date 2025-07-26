@@ -326,6 +326,9 @@ MonoBehaviour:
     area: 0
     speed: 0
     hasEvolved: 0
+  damageableLayer:
+    serializedVersion: 2
+    m_Bits: 128
   whips:
   - {fileID: 8430570853650718744}
   - {fileID: 8430570852891391083}

@@ -19,7 +19,7 @@ namespace VSLike
             Vector3 currentPos = poz.position;
             foreach (Collider2D t in düþmanlar)
             {
-                if (t.GetComponent<Enemy>())
+                if (t.GetComponent<EnemyManager>())
                 {
                     float dist = Vector3.Distance(t.transform.position, currentPos);
                     if (dist < minDist)
@@ -40,7 +40,7 @@ namespace VSLike
             {
                 GameObject throwedArrow = Instantiate(projectile, projectileSpawnPoint[i]);
                 GetClosestEnemy(throwedArrow.transform);
-                throwedArrow.GetComponent<IThrowable>().Equalize(weaponValues.damage, weaponValues.durability, weaponValues.stayTime, weaponValues.speed, weaponValues.hasEvolved);
+                throwedArrow.GetComponent<IThrowable>().Equalize(weaponValues.damage, weaponValues.durability, weaponValues.stayTime, weaponValues.speed, weaponValues.hasEvolved, damageableLayer);
 
                 if (isArrow)
                     throwedArrow.transform.SetParent(null);

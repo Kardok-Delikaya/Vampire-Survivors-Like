@@ -15,26 +15,24 @@ namespace VSLike
         public bool active;
         public float x, y;
         public float area;
-        public List<Collider2D> enemiesHasBeenShooted;
+        [HideInInspector] public List<Collider2D> enemiesHasBeenHitted;
+        [HideInInspector] public LayerMask damageableLayer;
 
         void FixedUpdate()
         {
             if (active)
             {
-                Collider2D[] enemies = Physics2D.OverlapBoxAll(transform.position, GetComponent<BoxCollider2D>().size * area, 0);
-                if (enemies.Length != 0)
+                Collider2D[] damageableObjects = Physics2D.OverlapBoxAll(transform.position, GetComponent<BoxCollider2D>().size * area, 0, damageableLayer);
+                if (damageableObjects.Length != 0)
                 {
-                    foreach (Collider2D enemy in enemies)
+                    foreach (Collider2D damageable in damageableObjects)
                     {
-                        if (enemy.GetComponent<IDamage>() != null)
+                        if (!enemiesHasBeenHitted.Contains(damageable))
                         {
-                            IDamage obj = enemy.GetComponent<IDamage>();
-                            if (obj != null && !enemiesHasBeenShooted.Contains(enemy))
-                            {
-                                enemiesHasBeenShooted.Add(enemy);
-                                obj.TakeDamage(damage, 1);
-                            }
+                            enemiesHasBeenHitted.Add(damageable);
+                            damageable.GetComponent<IDamage>().TakeDamage(damage, 1);
                         }
+
                     }
                 }
             }
