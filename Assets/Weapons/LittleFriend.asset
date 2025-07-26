@@ -16,7 +16,7 @@ MonoBehaviour:
   values:
     damage: 5
     timer: 3
-    count: 1
+    count: 0
     durability: 10
     stayTime: 5
     area: 1

@@ -10296,15 +10296,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2703f43fbbba5b43a47d3a2f4f45d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnArea: {x: 20, y: 15}
   enemyCount: 0
-  enemies: []
-  enemySpawnTimer: []
-  enemySpawnCoolDown: []
-  enemySpawnStartLevel: 
-  enemySpawnMaxLevel: 
-  bosses: []
-  bossSpawnLevel: 
-  spawnArea: {x: 40, y: 30}
+  enemies:
+  - {fileID: 7450569155535650866, guid: 6c5bc7cbc82336640b2a6efacd5dab66, type: 3}
+  - {fileID: 5238342207441214729, guid: 9fa2ef28b5f341a47a0ee5a9361b8af8, type: 3}
+  - {fileID: 8198184506378407773, guid: b4201a4bc90e9954ab0ae6facdae1903, type: 3}
+  - {fileID: 4045153246861629789, guid: eb1c052acd65f4f4e8e55af39474e369, type: 3}
+  - {fileID: 754391166050238001, guid: e5317f42b4486114c80b9330384b94c7, type: 3}
+  enemySpawnCoolDown:
+  - 0.3
+  - 0.4
+  - 0.6
+  - 0.8
+  - 1
+  enemySpawnStartLevel: 0000000006000000140000001e00000032000000
+  enemySpawnMaxLevel: 0f0000001e000000320000000f2700000f270000
+  bosses:
+  - {fileID: 6500638878952385571, guid: 9727b302ea6711f4287f7308411fe933, type: 3}
+  - {fileID: 5238342207441214729, guid: 760a349148aedea44b738ab81d7b0a6c, type: 3}
+  - {fileID: 3245775493093506827, guid: 3cd5b9365dbfd5945b0738d86cb16c34, type: 3}
+  - {fileID: 5393804221955499256, guid: b80e84891e984e64c8a3089b3f510ed9, type: 3}
 --- !u!114 &2022316907
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10818,7 +10830,7 @@ MonoBehaviour:
   shieldBar: {fileID: 1627614404}
   damagePopUp: {fileID: 744951814735632710, guid: 49b2860cdfd96d44ab6c6b6a11f2f028, type: 3}
   xpCount: 0
-  xp: {fileID: 2014919053}
+  xp: {fileID: 3306251738472909407, guid: 580fd70cd9841984fbb757a783dcb13a, type: 3}
   spawnedRedXP: {fileID: 0}
 --- !u!114 &2144853732
 MonoBehaviour:

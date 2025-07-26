@@ -20,11 +20,11 @@ MonoBehaviour:
   weaponValues:
     damage: 0
     timer: 0
-    count: 0
+    count: 1
     durability: 0
     stayTime: 0
     area: 0
-    speed: 1
+    speed: 0
     hasEvolved: 1
   item: {fileID: 0}
   itemValues:

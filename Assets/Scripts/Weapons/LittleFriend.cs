@@ -8,7 +8,7 @@ namespace VSLike
     {
         PlayerManager player;
         int vertical;
-        int horizontal=1;
+        int horizontal = 1;
         int bulletCount;
         int bombCount;
         [SerializeField] GameObject bullet;
@@ -21,10 +21,10 @@ namespace VSLike
 
         public override void Attack()
         {
-            bombCount = (int)weaponValues.speed;
+            bombCount = weaponValues.count;
             bulletCount = weaponValues.durability;
 
-            if (bombCount == 2)
+            if (bombCount > 1)
             {
                 BombThrow();
             }
@@ -56,7 +56,7 @@ namespace VSLike
             bombCount--;
             GameObject Ibomba = Instantiate(bomb, transform);
             Ibomba.GetComponent<Bomb>().damage = weaponValues.damage * 2;
-            Ibomba.GetComponent<Bomb>().speed = (int)weaponValues.speed*2;
+            Ibomba.GetComponent<Bomb>().speed = (int)weaponValues.speed * 2;
             Ibomba.GetComponent<Bomb>().stayTime = weaponValues.stayTime;
             StraightShoot(Ibomba);
 
@@ -85,7 +85,7 @@ namespace VSLike
             {
                 horizontal = 1;
             }
-            else if (player.pos.x< -.2)
+            else if (player.pos.x < -.2)
             {
                 horizontal = -1;
             }

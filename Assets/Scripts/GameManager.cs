@@ -173,7 +173,7 @@ namespace VSLike
                 maxXp += 16;
             }
 
-            spawner.CheckForBossSpawn();
+            spawner.TryToSpawnBoss();
         }
 
         public void GetGold()
@@ -220,7 +220,7 @@ namespace VSLike
         public void Upgrade(int id)
         {
             UpgradeData upgradeData = chosedUpgrades[id];
-            if (receivedUpgrades == null) { receivedUpgrades = new List<UpgradeData>(); }
+            if (receivedUpgrades == null) receivedUpgrades = new List<UpgradeData>();
             switch (upgradeData.upgradeType)
             {
                 case UpgradeType.OpenItem:

@@ -20,7 +20,7 @@ MonoBehaviour:
   weaponValues:
     damage: 0
     timer: 0
-    count: 0
+    count: 1
     durability: 0
     stayTime: 0
     area: 0

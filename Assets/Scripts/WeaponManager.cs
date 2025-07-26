@@ -9,11 +9,8 @@ namespace VSLike
     {
         [SerializeField] Transform weaponsPos;
         [SerializeField] GameManager gameManager;
-        public List<Weapons> weapons;
-        void Awake()
-        {
-            weapons = new List<Weapons>();
-        }
+        public List<Weapons> weapons=new List<Weapons>();
+
         public void AddWeapon(WeaponData weaponData)
         {
             GameObject weaponObj = Instantiate(weaponData.weaponPrefab, weaponsPos);
