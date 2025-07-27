@@ -58,10 +58,8 @@ namespace VSLike
                             }
                             else if (hasEvolved && arrow != null)
                             {
-                                GameObject projectile1 = Instantiate(this.gameObject, transform.localPosition, transform.localRotation);
-                                GameObject projectile2 = Instantiate(gameObject, transform.localPosition, transform.localRotation);
-                                projectile1.transform.SetParent(null);
-                                projectile2.transform.SetParent(null);
+                                GameObject projectile1 = Instantiate(gameObject, transform,true);
+                                GameObject projectile2 = Instantiate(gameObject, transform,true);
                                 projectile1.transform.eulerAngles = new Vector3(0, 0, projectile1.transform.eulerAngles.z + 15);
                                 projectile2.transform.eulerAngles = new Vector3(0, 0, projectile2.transform.eulerAngles.z - 15);
                             }
