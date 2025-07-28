@@ -6,13 +6,11 @@ namespace VSLike
 {
     public class MagicBall : MonoBehaviour, IThrowable
     {
-        int count;
         List<Collider2D> hittedEnemies=new List<Collider2D>();
-
-        bool hasEvolved;
+        int checkCount;
         int damage;
         float speed;
-        float stayTime;
+        float stayTime; bool hasEvolved;
         LayerMask damageableLayer;
 
         void FixedUpdate()
@@ -45,31 +43,32 @@ namespace VSLike
 
         void CheckLines()
         {
-            if (transform.localPosition.y > 9 && count != 1)
+            if (transform.localPosition.y > 9 && checkCount != 1)
             {
                 transform.rotation = Quaternion.Euler(0, 0, 180 - transform.eulerAngles.z);
-                count = 1;
+                checkCount = 1;
                 hittedEnemies.Clear();
             }
-            else if (transform.localPosition.y < -9 && count != 2)
+            else if (transform.localPosition.y < -9 && checkCount != 2)
             {
                 transform.rotation = Quaternion.Euler(0, 0, 180 - transform.eulerAngles.z);
-                count = 2;
+                checkCount = 2;
                 hittedEnemies.Clear();
             }
-            else if (transform.localPosition.x > 18 && count != 3)
+            else if (transform.localPosition.x > 18 && checkCount != 3)
             {
                 transform.rotation = Quaternion.Euler(0, 0, -transform.eulerAngles.z);
-                count = 3;
+                checkCount = 3;
                 hittedEnemies.Clear();
             }
-            else if (transform.localPosition.x < -18 && count != 4)
+            else if (transform.localPosition.x < -18 && checkCount != 4)
             {
                 transform.rotation = Quaternion.Euler(0, 0, -transform.eulerAngles.z);
-                count = 4;
+                checkCount = 4;
                 hittedEnemies.Clear();
             }
         }
+
         public void Equalize(int damage, int health, float stayingTime, float speed, bool hasEvolved, LayerMask damageableLayer)
         {
             this.damage = damage;

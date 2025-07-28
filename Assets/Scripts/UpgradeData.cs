@@ -11,6 +11,7 @@ namespace VSLike
         OpenWeapon,
         OpenItem
     }
+
     [CreateAssetMenu]
     public class UpgradeData : ScriptableObject
     {

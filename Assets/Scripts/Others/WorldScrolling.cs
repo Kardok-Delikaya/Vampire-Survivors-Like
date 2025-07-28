@@ -16,6 +16,7 @@ namespace VSLike
         [SerializeField] int terrainTileVerticalCount;
         int fieldOfVisionHeight = 3;
         int fieldOfVisionWidth = 3;
+
         void Awake()
         {
             terrainTiles = new GameObject[terrainTileHorizontalCount, terrainTileVerticalCount];
@@ -95,6 +96,7 @@ namespace VSLike
             }
             return (int)currentValue;
         }
+
         internal void Add(GameObject tileGameObject, Vector2Int tilePoz)
         {
             terrainTiles[tilePoz.x, tilePoz.y] = tileGameObject;

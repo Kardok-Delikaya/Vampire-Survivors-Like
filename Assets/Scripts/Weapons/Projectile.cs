@@ -8,12 +8,12 @@ namespace VSLike
 {
     public class Projectile : MonoBehaviour, IThrowable
     {
-        List<Collider2D> enemiesHited = new List<Collider2D>();
-        bool hasEvolved;
+        [HideInInspector] public List<Collider2D> enemiesHited = new List<Collider2D>();
         int damage;
         int health;
         float speed;
         float stayTime;
+        bool hasEvolved;
         LayerMask damageableLayer;
 
         [SerializeField] GameObject arrow;
@@ -58,10 +58,12 @@ namespace VSLike
                             }
                             else if (hasEvolved && arrow != null)
                             {
-                                GameObject projectile1 = Instantiate(gameObject, transform,true);
-                                GameObject projectile2 = Instantiate(gameObject, transform,true);
-                                projectile1.transform.eulerAngles = new Vector3(0, 0, projectile1.transform.eulerAngles.z + 15);
-                                projectile2.transform.eulerAngles = new Vector3(0, 0, projectile2.transform.eulerAngles.z - 15);
+                                GameObject projectile1 = Instantiate(gameObject, transform.position, Quaternion.Euler(0, 0, transform.eulerAngles.z + 15), null);
+                                GameObject projectile2 = Instantiate(gameObject, transform.position, Quaternion.Euler(0, 0, transform.eulerAngles.z - 15), null);
+                                projectile1.GetComponent<IThrowable>().Equalize(damage, health, stayTime, speed, hasEvolved, damageableLayer);
+                                projectile2.GetComponent<IThrowable>().Equalize(damage, health, stayTime, speed, hasEvolved, damageableLayer);
+                                projectile1.GetComponent<Projectile>().enemiesHited = enemiesHited;
+                                projectile2.GetComponent<Projectile>().enemiesHited = enemiesHited;
                             }
                         }
                     }

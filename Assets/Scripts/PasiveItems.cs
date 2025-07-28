@@ -15,12 +15,14 @@ namespace VSLike
         {
             character = GetComponent<PlayerManager>();
         }
+
         public void Equip(Items item)
         {
             if (items == null)
             {
                 items = new List<Items>();
             }
+
             Items newItem = new Items();
             newItem.isIn(item.name);
             newItem.values.Add(item.values);
@@ -28,6 +30,7 @@ namespace VSLike
             newItem.Equip(character);
             gameManager.AddToUpgradeList(item.upgrades);
         }
+
         internal void ItemUpgrade(UpgradeData upgradeData)
         {
             Items upgradedItem = items.Find(id => id.name == upgradeData.item.name);

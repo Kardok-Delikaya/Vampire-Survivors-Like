@@ -10,19 +10,21 @@ namespace VSLike
     public class UpgradeButton : MonoBehaviour
     {
         [SerializeField] Image icon;
-        [SerializeField] TextMeshProUGUI ad, açıklama;
-        public void Upgrade(UpgradeData yükseltmeData)
+        [SerializeField] TextMeshProUGUI nameText;
+        [SerializeField] TextMeshProUGUI descriptionText;
+
+        public void Upgrade(UpgradeData upgradeData)
         {
-            icon.sprite = yükseltmeData.icon;
-            ad.text = yükseltmeData.Name;
-            açıklama.text = yükseltmeData.Description;
+            icon.sprite = upgradeData.icon;
+            nameText.text = upgradeData.Name;
+            descriptionText.text = upgradeData.Description;
         }
 
         internal void Clear()
         {
             icon.sprite = null;
-            ad.text = null;
-            açıklama.text = null;
+            nameText.text = null;
+            descriptionText.text = null;
         }
     }
 }

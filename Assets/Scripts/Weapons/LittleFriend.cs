@@ -38,7 +38,7 @@ namespace VSLike
         {
             bulletCount--;
             GameObject IBullet = Instantiate(bullet, transform);
-            IBullet.GetComponent<Projectile>().Equalize(weaponValues.damage, weaponValues.durability, weaponValues.stayTime, weaponValues.speed, false, damageableLayer);
+            IBullet.GetComponent<Projectile>().Equalize(weaponValues.damage, 1, weaponValues.stayTime, weaponValues.speed, false, damageableLayer);
             ShootAtMoveDirection(IBullet);
             IBullet.transform.eulerAngles = new Vector3(0, 0, Random.Range(IBullet.transform.eulerAngles.z - 15, IBullet.transform.eulerAngles.z + 15));
             
@@ -56,7 +56,7 @@ namespace VSLike
         {
             bombCount--;
             GameObject _bomb = Instantiate(bomb, transform);
-            _bomb.GetComponent<Projectile>().Equalize(weaponValues.damage*2, weaponValues.durability, weaponValues.stayTime, weaponValues.speed*2, false, damageableLayer);
+            _bomb.GetComponent<Bomb>().Equalize(weaponValues.damage*2, 1, weaponValues.stayTime, weaponValues.speed/2, false, damageableLayer);
             ShootAtMoveDirection(_bomb);
 
             if (bulletCount > 0)

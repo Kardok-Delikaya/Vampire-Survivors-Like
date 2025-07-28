@@ -6,6 +6,7 @@ namespace VSLike
 {
     public class EnemyManager : MonoBehaviour, IDamage
     {
+        Vector3 direction;
         PlayerManager player;
         Rigidbody2D rb;
         GameManager gameManager;
@@ -14,8 +15,6 @@ namespace VSLike
         float attackCoolDown;
         bool active;
         bool beingPushed;
-        int force;
-        Vector3 direction;
 
         [SerializeField] float health;
         [SerializeField] float speed;

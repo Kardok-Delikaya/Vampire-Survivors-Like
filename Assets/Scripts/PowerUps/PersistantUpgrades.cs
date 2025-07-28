@@ -19,15 +19,7 @@ namespace VSLike
 
         void Start()
         {
-            if (PlayerPrefs.GetInt("Gold_Count") == 0)
-            {
-                goldCount = 500;
-            }
-            else
-            {
-                goldCount = PlayerPrefs.GetInt("Gold_Count");
-            }
-            
+            goldCount = PlayerPrefs.GetInt("Gold_Count");
             goldText.text = goldCount + "";
             GetUpgradesToPersistantItem();
             PersistantUpgradeInfoPanel(0);

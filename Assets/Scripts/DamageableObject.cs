@@ -9,6 +9,7 @@ namespace VSLike
         Transform player;
         [SerializeField] GameObject health;
         [SerializeField] GameObject gold;
+
         private void Start()
         {
             player = FindAnyObjectByType<PlayerManager>().transform;

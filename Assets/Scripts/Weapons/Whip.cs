@@ -34,12 +34,11 @@ namespace VSLike
         void WhipAttack()
         {
             whips[attackCount].SetActive(true);
-            Collider2D[] objs;
-            objs = Physics2D.OverlapBoxAll(whips[attackCount].transform.position, new Vector3(3.4f * weaponValues.area, 1.5f * weaponValues.area, 1), 0,damageableLayer);
+            Collider2D[] damageableObjects = Physics2D.OverlapBoxAll(whips[attackCount].transform.position, new Vector3(3.4f * weaponValues.area, 1.5f * weaponValues.area, 1), 0, damageableLayer);
 
-            for (int i = 0; i < objs.Length; i++)
+            for (int i = 0; i < damageableObjects.Length; i++)
             {
-                objs[i].GetComponent<IDamage>().TakeDamage(weaponValues.damage, 2);
+                damageableObjects[i].GetComponent<IDamage>().TakeDamage(weaponValues.damage, 2);
             }
 
             if (attackCount < weaponValues.count - 1)

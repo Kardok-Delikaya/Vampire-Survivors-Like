@@ -16,6 +16,7 @@ namespace VSLike
         public float area;
         public float speed;
         public bool hasEvolved;
+
         public WeaponValues(int damage, float timer, int count, int durability, float stayTime, float area, float speed, bool hasEvolved)
         {
             this.damage = damage;

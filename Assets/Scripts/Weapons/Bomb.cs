@@ -13,6 +13,10 @@ namespace VSLike
 
         void FixedUpdate()
         {
+            stayTime -= Time.fixedDeltaTime;
+            if (stayTime < 0)
+                Destroy(gameObject);
+
             transform.position += transform.up * Time.deltaTime * speed;
 
             Collider2D[] objs = Physics2D.OverlapCircleAll(transform.position, .3f);
@@ -28,10 +32,6 @@ namespace VSLike
                     }
                 }
             }
-
-            stayTime -= Time.fixedDeltaTime;
-            if(stayTime < 0)
-                Destroy(gameObject);
             
         }
         void BlowUp()
@@ -48,13 +48,12 @@ namespace VSLike
             Destroy(gameObject);
         }
 
-        public void Equalize(int damage, int health, float stayTime, float speed, bool evoltion, LayerMask damageableLayer)
+        public void Equalize(int damage, int health, float stayTime, float speed, bool hasEvolved, LayerMask damageableLayer)
         {
             this.damage = damage;
             this.stayTime = stayTime;
             this.speed = speed;
             this.damageableLayer = damageableLayer;
-            throw new System.NotImplementedException();
         }
     }
 }

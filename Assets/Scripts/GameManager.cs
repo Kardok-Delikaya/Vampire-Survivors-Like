@@ -93,43 +93,44 @@ namespace VSLike
 
         public void GetReward()
         {
-            int i = Random.Range(level * 1, level * 3);
+            int randomGoldReward = Random.Range(level * 1, level * 3);
             rewardMenu.SetActive(true);
+
             switch (targetKillCount)
             {
                 case 50:
-                    rewardMessage.text = "+10 Shield +" + i + " gold.";
+                    rewardMessage.text = "+10 Shield +" + randomGoldReward + " gold.";
                     player.shield += 10;
                     player.Message("+10", Color.blue);
                     targetKillCount += 100;
                     break;
                 case 150:
-                    rewardMessage.text = "+15 Shield +" + i + " gold.";
+                    rewardMessage.text = "+15 Shield +" + randomGoldReward + " gold.";
                     player.shield += 15;
                     player.Message("+15", Color.blue);
                     targetKillCount += 150;
                     break;
                 case 300:
-                    rewardMessage.text = "+20 Shield +" + i + " gold.";
+                    rewardMessage.text = "+20 Shield +" + randomGoldReward + " gold.";
                     player.shield += 20;
                     player.Message("+20", Color.blue);
                     targetKillCount += 200;
                     break;
                 case 500:
-                    rewardMessage.text = "+25 Shield +" + i + " gold.";
+                    rewardMessage.text = "+25 Shield +" + randomGoldReward + " gold.";
                     player.shield += 25;
                     player.Message("+25", Color.blue);
                     targetKillCount += 250;
                     break;
                 default:
-                    rewardMessage.text = "+25 Shield +" + i + " gold.";
+                    rewardMessage.text = "+25 Shield +" + randomGoldReward + " gold.";
                     player.shield += 25;
                     player.Message("+25", Color.blue);
                     targetKillCount += 500;
                     break;
             }
 
-            goldCount += i;
+            goldCount += randomGoldReward;
             player.ShieldValue();
             goldCountText.text = goldCount + "";
             PlayerPrefs.SetInt("Gold_Count", goldCount);
@@ -255,10 +256,15 @@ namespace VSLike
             receivedUpgrades.Add(upgradeData);
             upgrades.Remove(upgradeData);
 
-            if (xp >= maxXp)
+            if (xp >= maxXp&&upgrades.Count>0)
+            {
+                xpSlider.value = xp / maxXp;
                 LevelUp();
+            }
             else
+            {
                 ClosePauseMenu();
+            }
         }
 
         public List<UpgradeData> GetUpgrades(int count)
