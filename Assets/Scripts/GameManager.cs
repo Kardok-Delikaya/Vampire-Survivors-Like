@@ -57,10 +57,6 @@ namespace VSLike
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
             ClearButtons();
-            AddStartWeapon(1);
-            AddStartWeapon(1);
-            AddStartWeapon(1);
-            AddStartWeapon(1);
             AddStartWeapon(0);
             AddToUpgradeList(pasiveUpgrades);
         }
