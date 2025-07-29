@@ -198,9 +198,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc47946f054723544ad6d66095e08231, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 50
+  health: 150
   speed: 5
   damage: 5
   damagePopUp: {fileID: 744951814735632710, guid: 49b2860cdfd96d44ab6c6b6a11f2f028, type: 3}
-  xpRewardCount: 150
+  xpRewardCount: 100
   canBePushed: 0
