@@ -1,13 +1,13 @@
 using UnityEngine;
 
-namespace VSLike
+namespace Others
 {
     public class TerrainTile : MonoBehaviour
     {
-        ChestSpawner chestSpawner;
-        [SerializeField] Vector2Int tilePos;
+        private ChestSpawner chestSpawner;
+        [SerializeField] private Vector2Int tilePos;
 
-        void Start()
+        private void Start()
         {
             chestSpawner = GetComponentInChildren<ChestSpawner>();
 

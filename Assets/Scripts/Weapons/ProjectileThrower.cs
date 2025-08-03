@@ -1,54 +1,51 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace VSLike
+public class ProjectileThrower : Weapons
 {
-    public class ProjectileThrower : Weapons
+    [SerializeField] private bool isArrow;
+    [SerializeField] private GameObject projectile;
+    [SerializeField] private Transform[] projectileSpawnPoint;
+    [SerializeField] private List<UpgradeData> newUpgrades;
+
+    private void GetClosestEnemy(Transform poz)
     {
-        [SerializeField] bool isArrow;
-        [SerializeField] GameObject projectile;
-        [SerializeField] Transform[] projectileSpawnPoint;
-        [SerializeField] List<UpgradeData> newUpgrades;
+        var damageableObjects = Physics2D.OverlapCircleAll(poz.position, 20f, damageableLayer);
+        Transform closestDamageableObject = null;
+        var minDist = Mathf.Infinity;
 
-        void GetClosestEnemy(Transform poz)
+        foreach (var damageable in damageableObjects)
         {
-            Collider2D[] damageableObjects = Physics2D.OverlapCircleAll(poz.position, 20f, damageableLayer);
-            Transform closestDamageableObject = null;
-            float minDist = Mathf.Infinity;
+            var dist = Vector3.Distance(damageable.transform.position, poz.position);
 
-            foreach (Collider2D damageable in damageableObjects)
+            if (dist < minDist)
             {
-                float dist = Vector3.Distance(damageable.transform.position, poz.position);
-
-                if (dist < minDist)
-                {
-                    closestDamageableObject = damageable.transform;
-                    minDist = dist;
-                }
-            }
-
-            if (closestDamageableObject != null)
-                poz.up = closestDamageableObject.position - poz.position;
-        }
-
-        public override void Attack()
-        {
-            for (int i = 0; i < weaponValues.count; i++)
-            {
-                GameObject throwedObject = Instantiate(projectile, projectileSpawnPoint[i]);
-                GetClosestEnemy(throwedObject.transform);
-                throwedObject.GetComponent<IThrowable>().Equalize(weaponValues.damage, weaponValues.durability, weaponValues.stayTime, weaponValues.speed, weaponValues.hasEvolved, damageableLayer);
-
-                if (isArrow)
-                    throwedObject.transform.SetParent(null);
+                closestDamageableObject = damageable.transform;
+                minDist = dist;
             }
         }
 
-        public override void Evolution()
+        if (closestDamageableObject != null)
+            poz.up = closestDamageableObject.position - poz.position;
+    }
+
+    protected override void Attack()
+    {
+        for (var i = 0; i < weaponValues.count; i++)
         {
-            this.weaponValues.hasEvolved = true;
-            FindAnyObjectByType<GameManager>().AddToUpgradeList(newUpgrades);
+            var throwedObject = Object.Instantiate(projectile, projectileSpawnPoint[i]);
+            GetClosestEnemy(throwedObject.transform);
+            throwedObject.GetComponent<IThrowable>().Equalize(weaponValues.damage, weaponValues.durability,
+                weaponValues.stayTime, weaponValues.speed, weaponValues.hasEvolved, damageableLayer);
+
+            if (isArrow)
+                throwedObject.transform.SetParent(null);
         }
+    }
+
+    public override void Evolution()
+    {
+        this.weaponValues.hasEvolved = true;
+        Object.FindAnyObjectByType<GameManager>().AddToUpgradeList(newUpgrades);
     }
 }

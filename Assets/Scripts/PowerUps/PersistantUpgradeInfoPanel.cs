@@ -1,9 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace VSLike
+namespace PowerUps
 {
     public class PersistantUpgradeInfoPanel : MonoBehaviour
     {

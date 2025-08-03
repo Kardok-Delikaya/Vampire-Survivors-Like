@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-namespace SlimUI.ModernMenu{
+namespace SlimUI.Modern_Menu_1.Scripts{
 	public class CheckMusicVolume : MonoBehaviour {
 		public void  Start (){
 			// remember volume level from last time

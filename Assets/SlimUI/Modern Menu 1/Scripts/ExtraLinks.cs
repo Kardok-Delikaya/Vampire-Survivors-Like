@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace SlimUI.ModernMenu{
+namespace SlimUI.Modern_Menu_1.Scripts{
     public class ExtraLinks : MonoBehaviour{
         public void CCP(){
             Application.OpenURL("http://u3d.as/1JZG");

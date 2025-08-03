@@ -1,7 +1,4 @@
-namespace VSLike
+public interface IDamage
 {
-    public interface IDamage
-    {
-        public void TakeDamage(int damage, int power);
-    }
+    public void TakeDamage(int damage, int power);
 }

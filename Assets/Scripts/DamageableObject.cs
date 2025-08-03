@@ -1,44 +1,39 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace VSLike
+public class DamageableObject : MonoBehaviour, IDamage
 {
-    public class DamageableObject : MonoBehaviour, IDamage
+    private Transform player;
+    [SerializeField] private GameObject health;
+    [SerializeField] private GameObject gold;
+
+    private void Start()
     {
-        Transform player;
-        [SerializeField] GameObject health;
-        [SerializeField] GameObject gold;
+        player = FindAnyObjectByType<PlayerManager>().transform;
+    }
 
-        private void Start()
+    private void FixedUpdate()
+    {
+        var distance = Vector3.Distance(transform.position, player.position);
+
+        if (distance > 50)
         {
-            player = FindAnyObjectByType<PlayerManager>().transform;
-        }
-
-        void FixedUpdate()
-        {
-            float distance = Vector3.Distance(transform.position, player.position);
-
-            if (distance > 50)
-            {
-                Destroy(gameObject);
-            }
-        }
-
-        public void TakeDamage(int damage, int power)
-        {
-            int randomNumber = Random.Range(0, 100);
-
-            if (randomNumber < 30)
-            {
-                Instantiate(health, transform.position, transform.rotation);
-            }
-            else
-            {
-                Instantiate(gold, transform.position, transform.rotation);
-            }
-
             Destroy(gameObject);
         }
+    }
+
+    public void TakeDamage(int damage, int power)
+    {
+        var randomNumber = Random.Range(0, 100);
+
+        if (randomNumber < 30)
+        {
+            Instantiate(health, transform.position, transform.rotation);
+        }
+        else
+        {
+            Instantiate(gold, transform.position, transform.rotation);
+        }
+
+        Destroy(gameObject);
     }
 }

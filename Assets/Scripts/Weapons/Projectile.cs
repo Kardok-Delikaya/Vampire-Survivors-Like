@@ -1,71 +1,68 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
-namespace VSLike
+public class Projectile : MonoBehaviour, IThrowable
 {
-    public class Projectile : MonoBehaviour, IThrowable
+    [HideInInspector] public List<Collider2D> enemiesHited = new List<Collider2D>();
+    private int damage;
+    private int health;
+    private float speed;
+    private float stayTime;
+    private bool hasEvolved;
+    private LayerMask damageableLayer;
+
+    [SerializeField] private GameObject arrow;
+
+    public void Equalize(int damage, int health, float stayTime, float speed, bool hasEvolved,
+        LayerMask damageableLayer)
     {
-        [HideInInspector] public List<Collider2D> enemiesHited = new List<Collider2D>();
-        int damage;
-        int health;
-        float speed;
-        float stayTime;
-        bool hasEvolved;
-        LayerMask damageableLayer;
+        this.damage = damage;
+        this.health = health;
+        this.speed = speed;
+        this.hasEvolved = hasEvolved;
+        this.stayTime = stayTime;
+        this.damageableLayer = damageableLayer;
+    }
 
-        [SerializeField] GameObject arrow;
+    private void FixedUpdate()
+    {
+        stayTime -= Time.fixedDeltaTime;
+        if (stayTime < 0)
+            Destroy(gameObject);
 
-        public void Equalize(int damage, int health, float stayTime, float speed, bool hasEvolved, LayerMask damageableLayer)
+        transform.position += transform.up * (speed * Time.deltaTime);
+
+        var damageableLayers = Physics2D.OverlapCircleAll(transform.position, .3f, damageableLayer);
+
+        if (damageableLayers.Length > 0)
         {
-            this.damage = damage;
-            this.health = health;
-            this.speed = speed;
-            this.hasEvolved = hasEvolved;
-            this.stayTime = stayTime;
-            this.damageableLayer = damageableLayer;
-        }
-
-        void FixedUpdate()
-        {
-            stayTime -= Time.fixedDeltaTime;
-            if (stayTime < 0)
-                Destroy(gameObject);
-
-            transform.position += transform.up * speed * Time.deltaTime;
-
-            Collider2D[] damageableLayers = Physics2D.OverlapCircleAll(transform.position, .3f, damageableLayer);
-
-            if (damageableLayers.Length > 0)
+            foreach (var damageable in damageableLayers)
             {
-                foreach (Collider2D damageable in damageableLayers)
+
+                if (!enemiesHited.Contains(damageable))
                 {
-                    if (damageable.GetComponent<IDamage>() != null && health != 0)
+                    enemiesHited.Add(damageable);
+
+                    health -= 1;
+
+                    damageable.GetComponent<IDamage>().TakeDamage(damage, 1);
+
+                    if (health == 0)
                     {
-                        if (!enemiesHited.Contains(damageable))
-                        {
-                            enemiesHited.Add(damageable);
-
-                            health -= 1;
-
-                            damageable.GetComponent<IDamage>().TakeDamage(damage, 1);
-
-                            if (health == 0)
-                            {
-                                Destroy(gameObject);
-                            }
-                            else if (hasEvolved && arrow != null)
-                            {
-                                GameObject projectile1 = Instantiate(gameObject, transform.position, Quaternion.Euler(0, 0, transform.eulerAngles.z + 15), null);
-                                GameObject projectile2 = Instantiate(gameObject, transform.position, Quaternion.Euler(0, 0, transform.eulerAngles.z - 15), null);
-                                projectile1.GetComponent<IThrowable>().Equalize(damage, health, stayTime, speed, hasEvolved, damageableLayer);
-                                projectile2.GetComponent<IThrowable>().Equalize(damage, health, stayTime, speed, hasEvolved, damageableLayer);
-                                projectile1.GetComponent<Projectile>().enemiesHited = enemiesHited;
-                                projectile2.GetComponent<Projectile>().enemiesHited = enemiesHited;
-                            }
-                        }
+                        Destroy(gameObject);
+                    }
+                    else if (hasEvolved && arrow != null)
+                    {
+                        var projectile1 = Instantiate(gameObject, transform.position,
+                            Quaternion.Euler(0, 0, transform.eulerAngles.z + 15), null);
+                        var projectile2 = Instantiate(gameObject, transform.position,
+                            Quaternion.Euler(0, 0, transform.eulerAngles.z - 15), null);
+                        projectile1.GetComponent<IThrowable>().Equalize(damage, health, stayTime, speed, hasEvolved,
+                            damageableLayer);
+                        projectile2.GetComponent<IThrowable>().Equalize(damage, health, stayTime, speed, hasEvolved,
+                            damageableLayer);
+                        projectile1.GetComponent<Projectile>().enemiesHited = enemiesHited;
+                        projectile2.GetComponent<Projectile>().enemiesHited = enemiesHited;
                     }
                 }
             }

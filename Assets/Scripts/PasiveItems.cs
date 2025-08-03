@@ -1,42 +1,37 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace VSLike
+public class PasiveItems : MonoBehaviour
 {
-    public class PasiveItems : MonoBehaviour
+    [SerializeField] private List<Items> items;
+    private PlayerManager character;
+    [SerializeField] private GameManager gameManager;
+
+    private void Awake()
     {
-        [SerializeField] List<Items> items;
-        PlayerManager character;
-        [SerializeField] GameManager gameManager;
+        character = GetComponent<PlayerManager>();
+    }
 
-        void Awake()
+    public void Equip(Items item)
+    {
+        if (items == null)
         {
-            character = GetComponent<PlayerManager>();
+            items = new List<Items>();
         }
 
-        public void Equip(Items item)
-        {
-            if (items == null)
-            {
-                items = new List<Items>();
-            }
+        var newItem = ScriptableObject.CreateInstance<Items>();
+        newItem.isIn(item.name);
+        newItem.values.Add(item.values);
+        items.Add(newItem);
+        newItem.Equip(character);
+        gameManager.AddToUpgradeList(item.upgrades);
+    }
 
-            Items newItem = new Items();
-            newItem.isIn(item.name);
-            newItem.values.Add(item.values);
-            items.Add(newItem);
-            newItem.Equip(character);
-            gameManager.AddToUpgradeList(item.upgrades);
-        }
-
-        internal void ItemUpgrade(UpgradeData upgradeData)
-        {
-            Items upgradedItem = items.Find(id => id.name == upgradeData.item.name);
-            upgradedItem.values.Add(upgradeData.itemValues);
-            upgradedItem.Equip(character);
-            gameManager.AddToUpgradeList(upgradeData.upgrades);
-        }
+    internal void ItemUpgrade(UpgradeData upgradeData)
+    {
+        var upgradedItem = items.Find(id => id.name == upgradeData.item.name);
+        upgradedItem.values.Add(upgradeData.itemValues);
+        upgradedItem.Equip(character);
+        gameManager.AddToUpgradeList(upgradeData.upgrades);
     }
 }

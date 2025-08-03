@@ -1,14 +1,14 @@
-﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
+﻿using System.Collections;
 using TMPro;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-namespace SlimUI.ModernMenu
+namespace SlimUI.Modern_Menu_1.Scripts
 {
 	public class MainMenu : MonoBehaviour
 	{
-		Animator CameraObject;
+		private Animator CameraObject;
 
 		[Space]
 
@@ -78,19 +78,19 @@ namespace SlimUI.ModernMenu
 		public Slider loadBar;
 		public TMP_Text finishedLoadingText;
 
-		void Start()
+		private void Start()
 		{
 			CameraObject = transform.GetComponent<Animator>();
 			DisableMenus();
 			if(isMobile) menus[0].SetActive(true);
 		}
 
-		void Awake()
+		private void Awake()
 		{
 			SetThemeColors();
 		}
 
-		void SetThemeColors()
+		private void SetThemeColors()
 		{
 			if(theme == Theme.custom1){
 				themeController.currentColor = themeController.custom1.graphic1;
@@ -128,7 +128,7 @@ namespace SlimUI.ModernMenu
 			CameraObject.SetFloat("Animate",0);
 		}
 
-		void DisablePanels()
+		private void DisablePanels()
 		{
 			PanelControls.SetActive(false);
 			PanelVideo.SetActive(false);
@@ -150,7 +150,7 @@ namespace SlimUI.ModernMenu
 
 		public void DisableMenus()
 		{
-			for (int i = 0; i < menus.Length; i++)
+			for (var i = 0; i < menus.Length; i++)
 			{
 				menus[i].SetActive(false);
 			}
@@ -233,16 +233,16 @@ namespace SlimUI.ModernMenu
 			#endif
 		}
 
-		IEnumerator LoadAsynchronously(string sceneName) // scene name is just the name of the current scene being loaded
+		private IEnumerator LoadAsynchronously(string sceneName) // scene name is just the name of the current scene being loaded
 		{ 
-			AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
+			var operation = SceneManager.LoadSceneAsync(sceneName);
 			operation.allowSceneActivation = false;
 			mainCanvas.SetActive(false);
 			loadingMenu.SetActive(true);
 
 			while (!operation.isDone)
 			{
-				float progress = Mathf.Clamp01(operation.progress / .9f);
+				var progress = Mathf.Clamp01(operation.progress / .9f);
 				loadBar.value = progress;
 
 				if(operation.progress >= 0.9f)

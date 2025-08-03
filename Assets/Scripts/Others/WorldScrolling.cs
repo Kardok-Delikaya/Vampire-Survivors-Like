@@ -1,33 +1,30 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace VSLike
+namespace Others
 {
     public class WorldScrolling : MonoBehaviour
     {
-        [SerializeField] Transform playerTransform;
-        Vector2Int currentTilePosition = new Vector2Int(0, 0);
-        [SerializeField] Vector2Int playerTilePosition;
-        Vector2Int onTileGridPosition;
-        GameObject[,] terrainTiles;
-        [SerializeField] int terrainTileHorizontalCount;
-        [SerializeField] int terrainTileVerticalCount;
-        int fieldOfVisionHeight = 3;
-        int fieldOfVisionWidth = 3;
+        [SerializeField] private Transform playerTransform;
+        private Vector2Int currentTilePosition = new Vector2Int(0, 0);
+        [SerializeField] private Vector2Int playerTilePosition;
+        private Vector2Int onTileGridPosition;
+        private GameObject[,] terrainTiles;
+        [SerializeField] private int terrainTileHorizontalCount;
+        [SerializeField] private int terrainTileVerticalCount;
+        private int fieldOfVisionHeight = 3;
+        private int fieldOfVisionWidth = 3;
 
-        void Awake()
+        private void Awake()
         {
             terrainTiles = new GameObject[terrainTileHorizontalCount, terrainTileVerticalCount];
         }
 
-        void Start()
+        private void Start()
         {
             UpdateTilesOnScreen();
         }
 
-        void Update()
+        private void Update()
         {
             playerTilePosition.x = (int)(playerTransform.position.x / 20);
             playerTilePosition.y = (int)(playerTransform.position.y / 20);
@@ -47,15 +44,15 @@ namespace VSLike
 
         private void UpdateTilesOnScreen()
         {
-            for (int pov_x = -fieldOfVisionWidth / 2; pov_x <= fieldOfVisionWidth / 2; pov_x++)
+            for (var pov_x = -fieldOfVisionWidth / 2; pov_x <= fieldOfVisionWidth / 2; pov_x++)
             {
-                for (int pov_y = -fieldOfVisionHeight / 2; pov_y <= fieldOfVisionHeight / 2; pov_y++)
+                for (var pov_y = -fieldOfVisionHeight / 2; pov_y <= fieldOfVisionHeight / 2; pov_y++)
                 {
-                    int tileToUpdate_x = CalculatePositionOnAxisWithWrap(playerTilePosition.x + pov_x, true);
-                    int tileToUpdate_y = CalculatePositionOnAxisWithWrap(playerTilePosition.y + pov_y, false);
+                    var tileToUpdate_x = CalculatePositionOnAxisWithWrap(playerTilePosition.x + pov_x, true);
+                    var tileToUpdate_y = CalculatePositionOnAxisWithWrap(playerTilePosition.y + pov_y, false);
 
-                    GameObject tile = terrainTiles[tileToUpdate_x, tileToUpdate_y];
-                    Vector3 newPosition = CalculateTilePosition(playerTilePosition.x + pov_x, playerTilePosition.y + pov_y);
+                    var tile = terrainTiles[tileToUpdate_x, tileToUpdate_y];
+                    var newPosition = CalculateTilePosition(playerTilePosition.x + pov_x, playerTilePosition.y + pov_y);
                     if (newPosition != tile.transform.position)
                     {
                         tile.transform.position = newPosition;

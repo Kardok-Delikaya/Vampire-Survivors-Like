@@ -1,20 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace VSLike
+public class DamagePopUp : MonoBehaviour
 {
-    public class DamagePopUp : MonoBehaviour
+    private void Start()
     {
-        void Start()
-        {
-            Destroy(gameObject, .5f);
-        }
+        Destroy(gameObject, .5f);
+    }
 
-        void FixedUpdate()
-        {
-            transform.localPosition += new Vector3(0, 0.05f, 0);
-            transform.localScale += new Vector3(0.02f, 0.02f, 0);
-        }
+    private void FixedUpdate()
+    {
+        transform.localPosition += new Vector3(0, 0.05f, 0);
+        transform.localScale += new Vector3(0.02f, 0.02f, 0);
     }
 }

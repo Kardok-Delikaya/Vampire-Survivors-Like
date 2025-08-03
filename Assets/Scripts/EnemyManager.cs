@@ -1,135 +1,131 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace VSLike
+public class EnemyManager : MonoBehaviour, IDamage
 {
-    public class EnemyManager : MonoBehaviour, IDamage
+    private Vector3 direction;
+    private PlayerManager player;
+    private Rigidbody2D rb;
+    private GameManager gameManager;
+    private SpriteRenderer sprite;
+    private Spawner spawner;
+    private float attackCoolDown;
+    private bool active;
+    private bool beingPushed;
+
+    [SerializeField] private float health;
+    [SerializeField] private float speed;
+    [SerializeField] private int damage;
+    [SerializeField] private GameObject damagePopUp;
+    [SerializeField] private int xpRewardCount;
+    [SerializeField] private bool canBePushed;
+
+    private void Awake()
     {
-        Vector3 direction;
-        PlayerManager player;
-        Rigidbody2D rb;
-        GameManager gameManager;
-        SpriteRenderer sprite;
-        Spawner spawner;
-        float attackCoolDown;
-        bool active;
-        bool beingPushed;
+        sprite=GetComponent<SpriteRenderer>();
+        player = FindAnyObjectByType<PlayerManager>();
+        gameManager = FindAnyObjectByType<GameManager>();
+        spawner=FindAnyObjectByType<Spawner>();
+        rb = GetComponent<Rigidbody2D>();
+    }
 
-        [SerializeField] float health;
-        [SerializeField] float speed;
-        [SerializeField] int damage;
-        [SerializeField] GameObject damagePopUp;
-        [SerializeField] int xpRewardCount;
-        [SerializeField] bool canBePushed;
+    private void FixedUpdate()
+    {
+        direction = (player.transform.position - transform.position).normalized;
 
-        void Awake()
+        FarDestroy();
+
+        if (beingPushed)
+            return;
+
+        Movement();
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject==player.gameObject)
         {
-            sprite=GetComponent<SpriteRenderer>();
-            player = FindAnyObjectByType<PlayerManager>();
-            gameManager = FindAnyObjectByType<GameManager>();
-            spawner=FindAnyObjectByType<Spawner>();
-            rb = GetComponent<Rigidbody2D>();
-        }
-
-        void FixedUpdate()
-        {
-            direction = (player.transform.position - transform.position).normalized;
-
-            FarDestroy();
-
-            if (beingPushed)
-                return;
-
-            Movement();
-        }
-
-        private void OnCollisionStay2D(Collision2D collision)
-        {
-            if (collision.gameObject==player.gameObject)
+            if (!active)
             {
-                if (!active)
+                Damage();
+                attackCoolDown = 1;
+                active = true;
+            }
+            else
+            {
+                attackCoolDown -= Time.deltaTime;
+                if (attackCoolDown <= 0)
                 {
-                    Damage();
-                    attackCoolDown = 1;
-                    active = true;
-                }
-                else
-                {
-                    attackCoolDown -= Time.deltaTime;
-                    if (attackCoolDown <= 0)
-                    {
-                        active = false;
-                    }
+                    active = false;
                 }
             }
         }
+    }
 
-        void Movement()
+    private void Movement()
+    {
+        rb.linearVelocity = direction * speed;
+
+        if (player.transform.position.x - transform.position.x > 0)
         {
-            rb.linearVelocity = direction * speed;
+            sprite.flipX = false;
+        }
+        else if (player.transform.position.x - transform.position.x < 0)
+        {
+            sprite.flipX = true;
+        }
+    }
 
-            if (player.transform.position.x - transform.position.x > 0)
-            {
-                sprite.flipX = false;
-            }
-            else if (player.transform.position.x - transform.position.x < 0)
-            {
-                sprite.flipX = true;
-            }
+    private void Damage()
+    {
+        player.TakeDamage(damage);
+    }
+
+    public void TakeDamage(int damage, int power)
+    {
+        health -= damage;
+
+        var DamagePopUp = Instantiate(damagePopUp, transform.position, transform.rotation) as GameObject;
+        DamagePopUp.transform.SetParent(null);
+        DamagePopUp.GetComponentInChildren<TMPro.TextMeshPro>().text = damage+"";
+
+        if (health <= 0)
+        {
+            HandleDeath();
+            return;
         }
 
-        void Damage()
+        if (canBePushed)
         {
-            player.TakeDamage(damage);
+            StartCoroutine(GetPushedBack(power));
         }
+    }
 
-        public void TakeDamage(int damage, int power)
+    private IEnumerator GetPushedBack(int power)
+    {
+        beingPushed = true;
+        rb.linearVelocity = -direction * speed*power;
+
+        yield return new WaitForSeconds(.2f);
+
+        beingPushed = false;
+    }
+
+    private void HandleDeath()
+    {
+        gameManager.HandleKill();
+        player.SpawnXP(transform, xpRewardCount);
+        spawner.enemyCount--;
+        Destroy(gameObject);
+    }
+
+    private void FarDestroy()
+    {
+        var distance = Vector3.Distance(transform.position, player.transform.position);
+
+        if (distance > 50)
         {
-            health -= damage;
-
-            GameObject DamagePopUp = Instantiate(damagePopUp, transform.position, transform.rotation) as GameObject;
-            DamagePopUp.transform.parent = null;
-            DamagePopUp.GetComponentInChildren<TMPro.TextMeshPro>().text = damage+"";
-
-            if (health <= 0)
-            {
-                HandleDeath();
-                return;
-            }
-
-            if (canBePushed)
-            {
-                StartCoroutine(GetPushedBack(power));
-            }
-        }
-
-        IEnumerator GetPushedBack(int power)
-        {
-            beingPushed = true;
-            rb.linearVelocity = -direction * speed*power;
-
-            yield return new WaitForSeconds(.2f);
-
-            beingPushed = false;
-        }
-
-        void HandleDeath()
-        {
-            gameManager.HandleKill();
-            player.SpawnXP(transform, xpRewardCount);
-            spawner.enemyCount--;
             Destroy(gameObject);
-        }
-
-        void FarDestroy()
-        {
-            float distance = Vector3.Distance(transform.position, player.transform.position);
-
-            if (distance > 50)
-            {
-                Destroy(gameObject);
-            }
         }
     }
 }

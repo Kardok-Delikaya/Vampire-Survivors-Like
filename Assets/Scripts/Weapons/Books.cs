@@ -1,81 +1,81 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace VSLike
+public class Books : Weapons
 {
-    public class Books : Weapons
+    private float attackCoolDown;
+    private float stayTime;
+    private float rotationTimer;
+    private int bookCount = 1;
+    private bool active;
+    [SerializeField] private Sprite sprite;
+    [SerializeField] private Book[] books;
+    [SerializeField] private List<UpgradeData> newUpgrades;
+
+    private void Awake()
     {
-        float attackCoolDown;
-        float stayTime;
-        float rotationTimer;
-        int bookCount = 1;
-        bool active;
-        [SerializeField] Sprite sprite;
-        [SerializeField] Book[] books;
-        [SerializeField] List<UpgradeData> newUpgrades;
+        foreach (var t in books)
+            t.damageableLayer = damageableLayer;
+    }
 
-        private void Awake()
+    private new void Update()
+    {
+        transform.Rotate(Vector3.forward * (Time.deltaTime * -180 * weaponValues.speed));
+        attackCoolDown -= Time.deltaTime;
+
+        if (attackCoolDown <= 0f)
         {
-            for (int i = 0; i < books.Length; i++)
-                books[i].damageableLayer = damageableLayer;
+            Attack();
         }
-        private new void FixedUpdate()
+
+        if (stayTime >= 0f)
         {
-            transform.Rotate(Vector3.forward * Time.deltaTime * -180 * weaponValues.speed);
-            attackCoolDown -= Time.fixedDeltaTime;
-
-            if (attackCoolDown <= 0f)
+            stayTime -= Time.deltaTime;
+        }
+        else if (active)
+        {
+            active = false;
+            for (var i = 0; i < bookCount; i++)
             {
-                Attack();
-            }
-
-            if (stayTime >= 0f)
-            {
-                stayTime -= Time.fixedDeltaTime;
-            }
-            else if (active)
-            {
-                active = false;
-                for (int i = 0; i < bookCount; i++)
-                {
-                    books[i].active = false;
-                    books[i].backTime = 20;
-                }
-            }
-
-            if (rotationTimer > 0)
-            {
-                rotationTimer -= Time.fixedDeltaTime;
-            }
-            else
-            {
-                for (int i = 0; i < weaponValues.count; i++)
-                {
-                    books[i].enemiesHasBeenHitted.Clear();
-                }
-                rotationTimer = 1f / weaponValues.speed;
+                books[i].active = false;
+                books[i].backTime = 20;
             }
         }
-        public override void Attack()
+
+        if (rotationTimer > 0)
         {
-            transform.localScale = new Vector3(weaponValues.area, weaponValues.area, 1);
-            bookCount = weaponValues.count;
-            stayTime = weaponValues.stayTime;
-            attackCoolDown = weaponValues.timer;
-            active = true;
-            for (int i = 0; i < bookCount; i++)
+            rotationTimer -= Time.deltaTime;
+        }
+        else
+        {
+            for (var i = 0; i < weaponValues.count; i++)
             {
-                books[i].active = true;
-                books[i].damage = weaponValues.damage;
-                books[i].area = weaponValues.area;
-                books[i].exitTime = 20;
+                books[i].enemiesHasBeenHitted.Clear();
             }
+
+            rotationTimer = 1f / weaponValues.speed;
         }
-        public override void Evolution()
+    }
+
+    protected override void Attack()
+    {
+        transform.localScale = new Vector3(weaponValues.area, weaponValues.area, 1);
+        bookCount = weaponValues.count;
+        stayTime = weaponValues.stayTime;
+        attackCoolDown = weaponValues.timer;
+        active = true;
+        for (var i = 0; i < bookCount; i++)
         {
-            weaponValues.area += 0.5f;
-            FindAnyObjectByType<GameManager>().AddToUpgradeList(newUpgrades);
+            books[i].active = true;
+            books[i].damage = weaponValues.damage;
+            books[i].area = weaponValues.area;
+            books[i].exitTime = 20;
         }
+    }
+
+    public override void Evolution()
+    {
+        weaponValues.area += 0.5f;
+        Object.FindAnyObjectByType<GameManager>().AddToUpgradeList(newUpgrades);
     }
 }

@@ -1,33 +1,28 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace VSLike
+public class LootableObject : MonoBehaviour
 {
-    public class LootableObject : MonoBehaviour
+    private Transform player;
+
+    public int id;
+    [HideInInspector] public int count;
+
+    private void Start()
     {
-        Transform player;
+        player = FindAnyObjectByType<PlayerManager>().transform;
+    }
 
-        public int id;
-        [HideInInspector] public int count;
+    private void FixedUpdate()
+    {
+        var distance = Vector3.Distance(transform.position, player.position);
 
-        private void Start()
+        if (distance > 50)
         {
-            player = FindAnyObjectByType<PlayerManager>().transform;
-        }
+            Destroy(gameObject);
 
-        void FixedUpdate()
-        {
-            float distance = Vector3.Distance(transform.position, player.position);
-
-            if (distance > 50)
+            if (id == 0)
             {
-                Destroy(gameObject);
-
-                if (id == 0)
-                {
-                    FindAnyObjectByType<PlayerManager>().xpCount--;
-                }
+                FindAnyObjectByType<PlayerManager>().xpCount--;
             }
         }
     }

@@ -1,14 +1,13 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
-namespace SlimUI.ModernMenu{
+namespace SlimUI.Modern_Menu_1.Scripts{
 	[System.Serializable]
 	public class ThemeUIElement : ThemeUI {
-		[Header("Parameters")]
-		Color outline;
-		Image image;
-		GameObject message;
+		[Header("Parameters")] private Color outline;
+		private Image image;
+		private GameObject message;
 		public enum OutlineStyle {solidThin, solidThick, dottedThin, dottedThick};
 		public bool hasImage = false;
 		public bool isText = false;

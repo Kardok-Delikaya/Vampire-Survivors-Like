@@ -1,9 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace VSLike
+namespace PowerUps
 {
     public class PersistantUpgradeButton : MonoBehaviour
     {
@@ -18,11 +17,11 @@ namespace VSLike
         public string upgradeInfo;
         public int upgradeCost;
 
-        void Start()
+        private void Start()
         {
             currentLevel = PlayerPrefs.GetInt(upgradeName+"level");
 
-            for (int i = 0; i < currentLevel; i++)
+            for (var i = 0; i < currentLevel; i++)
             {
                 toggles[i].isOn = true;
             }
@@ -32,7 +31,7 @@ namespace VSLike
         {
             currentLevel++;
 
-            for(int i=0;i<currentLevel; i++)
+            for(var i=0;i<currentLevel; i++)
             {
                 toggles[i].isOn = true;
             }
@@ -44,7 +43,7 @@ namespace VSLike
         {
             currentLevel = 0;
 
-            for (int i = 0; i < maxLevel; i++)
+            for (var i = 0; i < maxLevel; i++)
             {
                 toggles[i].isOn = false;
             }

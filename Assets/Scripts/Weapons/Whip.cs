@@ -1,70 +1,67 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace VSLike
+public class Whip : Weapons
 {
-    public class Whip : Weapons
+    private int attackCount;
+    private PlayerManager player;
+    [SerializeField] private GameObject[] whips;
+    [SerializeField] private List<UpgradeData> upgrades;
+
+    private void Start()
     {
-        int attackCount;
-        PlayerManager player;
-        [SerializeField] GameObject[] whips;
-        [SerializeField] List<UpgradeData> upgrades;
+        player = GetComponentInParent<PlayerManager>();
+    }
 
-        void Start()
+    protected override void Attack()
+    {
+        if (!player.IsLeft())
         {
-            player = GetComponentInParent<PlayerManager>();
+            transform.localScale = new Vector3(weaponValues.area, weaponValues.area, 1);
+        }
+        else
+        {
+            transform.localScale = new Vector3(-weaponValues.area, weaponValues.area, 1);
         }
 
-        public override void Attack()
-        {
-            if (!player.sprite.flipX)
-            {
-                transform.localScale = new Vector3(weaponValues.area, weaponValues.area, 1);
-            }
-            else
-            {
-                transform.localScale = new Vector3(-weaponValues.area, weaponValues.area, 1);
-            }
+        WhipAttack();
+        Invoke("CloseWhips", weaponValues.stayTime);
+    }
 
-            WhipAttack();
-            Invoke("CloseWhips", weaponValues.stayTime);
+    private void WhipAttack()
+    {
+        whips[attackCount].SetActive(true);
+        var damageableObjects = Physics2D.OverlapBoxAll(whips[attackCount].transform.position,
+            new Vector3(3.4f * weaponValues.area, 1.5f * weaponValues.area, 1), 0, damageableLayer);
+
+        for (var i = 0; i < damageableObjects.Length; i++)
+        {
+            damageableObjects[i].GetComponent<IDamage>().TakeDamage(weaponValues.damage, 2);
         }
 
-        void WhipAttack()
+        if (attackCount < weaponValues.count - 1)
         {
-            whips[attackCount].SetActive(true);
-            Collider2D[] damageableObjects = Physics2D.OverlapBoxAll(whips[attackCount].transform.position, new Vector3(3.4f * weaponValues.area, 1.5f * weaponValues.area, 1), 0, damageableLayer);
-
-            for (int i = 0; i < damageableObjects.Length; i++)
-            {
-                damageableObjects[i].GetComponent<IDamage>().TakeDamage(weaponValues.damage, 2);
-            }
-
-            if (attackCount < weaponValues.count - 1)
-            {
-                Invoke("WhipAttack", .1f);
-                attackCount++;
-            }
-            else
-            {
-                attackCount = 0;
-            }
+            Invoke("WhipAttack", .1f);
+            attackCount++;
         }
-
-        void CloseWhips()
+        else
         {
-            for (int i = 0; i < weaponValues.count; i++)
-            {
-                whips[i].SetActive(false);
-            }
+            attackCount = 0;
         }
+    }
 
-        public override void Evolution()
+    private void CloseWhips()
+    {
+        for (var i = 0; i < weaponValues.count; i++)
         {
-            weaponValues.area += 0.6f;
-            weaponValues.count += 1;
-            FindAnyObjectByType<GameManager>().AddToUpgradeList(upgrades);
+            whips[i].SetActive(false);
         }
+    }
+
+    public override void Evolution()
+    {
+        weaponValues.area += 0.6f;
+        weaponValues.count += 1;
+        Object.FindAnyObjectByType<GameManager>().AddToUpgradeList(upgrades);
     }
 }

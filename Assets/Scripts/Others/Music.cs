@@ -1,14 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace VSLike
+namespace Others
 {
     public class Music : MonoBehaviour
     {
-        [SerializeField] AudioClip musicClip;
-        AudioSource au;
-        void Start()
+        [SerializeField] private AudioClip musicClip;
+        private AudioSource au;
+
+        private void Start()
         {
             au = GetComponent<AudioSource>();
             Play(musicClip);

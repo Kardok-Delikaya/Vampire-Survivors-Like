@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-namespace VSLike
+namespace PowerUps
 {
     public class PersistantUpgrades : MonoBehaviour
     {
@@ -17,7 +14,7 @@ namespace VSLike
         public PersistantUpgradeInfoPanel panel;
         public PersistantUpgradeButton[] buttons;
 
-        void Start()
+        private void Start()
         {
             goldCount = PlayerPrefs.GetInt("Gold_Count");
             goldText.text = goldCount + "";
@@ -25,7 +22,7 @@ namespace VSLike
             PersistantUpgradeInfoPanel(0);
         }
 
-        void GetUpgradesToPersistantItem()
+        private void GetUpgradesToPersistantItem()
         {
             persistantUpgrade.values.maxHealth = PlayerPrefs.GetInt("Max Health Value");
             persistantUpgrade.values.armor = PlayerPrefs.GetInt("Armor Value");
@@ -106,7 +103,7 @@ namespace VSLike
             panel.upgradeInfo.text = buttons[id].upgradeInfo;
             panel.upgradeCost.text = buttons[id].upgradeCost + "";
 
-            for (int i = 0; i < buttons.Length; i++)
+            for (var i = 0; i < buttons.Length; i++)
             {
                 panel.upgradeButton[i].gameObject.SetActive(false);
             }
@@ -128,7 +125,7 @@ namespace VSLike
             PlayerPrefs.SetInt("Regenerate Value", 0);
             PlayerPrefs.SetFloat("Magnet Value", 0);
 
-            for (int i = 0; i < buttons.Length; i++)
+            for (var i = 0; i < buttons.Length; i++)
             {
                 buttons[i].Reset();
             }

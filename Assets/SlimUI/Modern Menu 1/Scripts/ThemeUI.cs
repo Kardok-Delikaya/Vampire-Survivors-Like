@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace SlimUI.ModernMenu
+namespace SlimUI.Modern_Menu_1.Scripts
 {
 	[ExecuteInEditMode()]
 	[System.Serializable]

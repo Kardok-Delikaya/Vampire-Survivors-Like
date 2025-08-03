@@ -1,23 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
-namespace VSLike
+namespace Others
 {
     public class Timer : MonoBehaviour
     {
-        TextMeshProUGUI text;
-        float time;
-        int minute;
-        int second;
+        private TextMeshProUGUI text;
+        private float time;
+        private int minute;
+        private int second;
 
-        void Start()
+        private void Start()
         {
             text = GetComponent<TextMeshProUGUI>();
         }
 
-        void FixedUpdate()
+        private void FixedUpdate()
         {
             time += Time.fixedDeltaTime;
             second = (int)(time % 60);
