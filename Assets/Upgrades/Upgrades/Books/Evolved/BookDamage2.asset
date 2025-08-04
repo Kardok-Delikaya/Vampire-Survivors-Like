@@ -34,6 +34,6 @@ MonoBehaviour:
     regenerate: 0
     magnet: 0
   upgrades:
-  - {fileID: 11400000, guid: 56d4463a944c91e42be9dfe4c935ac9f, type: 2}
+  - {fileID: 11400000, guid: 59fb831a9a762ec40990b8176a8a47c2, type: 2}
   lastLevel: 0
   common: {fileID: 0}

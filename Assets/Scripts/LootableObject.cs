@@ -9,21 +9,20 @@ public class LootableObject : MonoBehaviour
 
     private void Start()
     {
-        player = FindAnyObjectByType<PlayerManager>().transform;
+        player = GameManager.Instance.player.transform;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         var distance = Vector3.Distance(transform.position, player.position);
 
-        if (distance > 50)
-        {
-            Destroy(gameObject);
+        if (!(distance > 50)) return;
+        
+        Destroy(gameObject);
 
-            if (id == 0)
-            {
-                FindAnyObjectByType<PlayerManager>().xpCount--;
-            }
+        if (id == 0)
+        {
+            GameManager.Instance.player.xpCount--;
         }
     }
 }

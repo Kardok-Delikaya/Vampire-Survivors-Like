@@ -8,7 +8,7 @@ public class UpgradeButton : MonoBehaviour
     [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private TextMeshProUGUI descriptionText;
 
-    public void Upgrade(UpgradeData upgradeData)
+    public void HandleUpgradeButtons(UpgradeData upgradeData)
     {
         icon.sprite = upgradeData.icon;
         nameText.text = upgradeData.Name;

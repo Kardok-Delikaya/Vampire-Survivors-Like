@@ -10,9 +10,7 @@ public class Projectile : MonoBehaviour, IThrowable
     private float stayTime;
     private bool hasEvolved;
     private LayerMask damageableLayer;
-
-    [SerializeField] private GameObject arrow;
-
+    [SerializeField] private bool isArrow;
     public void Equalize(int damage, int health, float stayTime, float speed, bool hasEvolved,
         LayerMask damageableLayer)
     {
@@ -51,7 +49,7 @@ public class Projectile : MonoBehaviour, IThrowable
                     {
                         Destroy(gameObject);
                     }
-                    else if (hasEvolved && arrow != null)
+                    else if (hasEvolved && isArrow)
                     {
                         var projectile1 = Instantiate(gameObject, transform.position,
                             Quaternion.Euler(0, 0, transform.eulerAngles.z + 15), null);

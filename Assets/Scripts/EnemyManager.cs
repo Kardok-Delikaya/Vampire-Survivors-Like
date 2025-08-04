@@ -1,14 +1,13 @@
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class EnemyManager : MonoBehaviour, IDamage
 {
     private Vector3 direction;
     private PlayerManager player;
     private Rigidbody2D rb;
-    private GameManager gameManager;
     private SpriteRenderer sprite;
-    private Spawner spawner;
     private float attackCoolDown;
     private bool active;
     private bool beingPushed;
@@ -23,9 +22,7 @@ public class EnemyManager : MonoBehaviour, IDamage
     private void Awake()
     {
         sprite=GetComponent<SpriteRenderer>();
-        player = FindAnyObjectByType<PlayerManager>();
-        gameManager = FindAnyObjectByType<GameManager>();
-        spawner=FindAnyObjectByType<Spawner>();
+        player = GameManager.Instance.player;
         rb = GetComponent<Rigidbody2D>();
     }
 
@@ -113,9 +110,9 @@ public class EnemyManager : MonoBehaviour, IDamage
 
     private void HandleDeath()
     {
-        gameManager.HandleKill();
+        GameManager.Instance.HandleKill();
         player.SpawnXP(transform, xpRewardCount);
-        spawner.enemyCount--;
+        GameManager.Instance.spawner.enemyCount--;
         Destroy(gameObject);
     }
 

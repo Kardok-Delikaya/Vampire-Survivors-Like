@@ -101,12 +101,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5de2360c2d9c54e43b0a79f9fa7e0169, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hasEvolved: 0
-  arrow: {fileID: 1903035272070118834}
-  damage: 0
-  speed: 0
-  health: 0
-  stayTime: 0
+  enemiesHited: []
+  isArrow: 1
 --- !u!70 &1332138427301197264
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

@@ -35,8 +35,8 @@ public class Items : ScriptableObject
         upgrades = new List<UpgradeData>();
     }
 
-    public void Equip(PlayerManager character)
+    public void Equip(PlayerManager player)
     {
-        character.GetStatUpgrades(this);
+        player.GetStatUpgrades(this);
     }
 }

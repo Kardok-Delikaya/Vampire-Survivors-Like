@@ -1,41 +1,36 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Spawner))]
 public class GameManager : MonoBehaviour
 {
-    private Spawner spawner;
-    private PlayerManager player;
-    private int killCount;
-    private int targetKillCount;
-    private int goldCount;
-    private float maxXp;
-    private float xp;
+    public static GameManager Instance;
+
+    public PlayerManager player;
+    public Spawner spawner;
+    public UIManager uiManager { get; private set; }
 
     [Header("Level")]
     public int level;
-
-    [Header("HUD")]
-    [SerializeField]
-    private Slider xpSlider;
-    [SerializeField] private TextMeshProUGUI levelText;
-    [SerializeField] private TextMeshProUGUI killText;
-    [SerializeField] private TextMeshProUGUI goldCountText;
-    [SerializeField] private GameObject deathMenu;
-    [SerializeField] private GameObject pauseMenu;
-    [SerializeField] private GameObject levelMenu;
+    [SerializeField] private float maxXp;
+    [SerializeField] private int targetKillCount;
+    private int killCount;
+    private int goldCount;
+    private float xp;
 
     [Header("Rewards")]
     [SerializeField]
     private GameObject rewardMenu;
-    [SerializeField] private TextMeshProUGUI rewardMessage;
+    [SerializeField] private TMP_Text rewardMessage;
 
     [Header("Upgrades")]
-    [SerializeField]
-    private List<Image> upgradePictures;
     [SerializeField] private List<UpgradeData> upgrades;
     [SerializeField] private List<UpgradeData> pasiveUpgrades;
     private List<UpgradeData> chosedUpgrades;
@@ -43,52 +38,34 @@ public class GameManager : MonoBehaviour
     [SerializeField] private List<UpgradeButton> upgradeButtons;
     [SerializeField] private WeaponManager weaponManager;
     [SerializeField] private PasiveItems pasiveItems;
-    [SerializeField] private GameObject playerSpecPanel;
-    public List<TextMeshProUGUI> playerSpecTexts;
 
     private void Awake()
     {
-        spawner = GetComponent<Spawner>();
-        player = FindAnyObjectByType<PlayerManager>();
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+        
+        uiManager=GetComponent<UIManager>();
+        
         goldCount = PlayerPrefs.GetInt("Gold_Count");
-        goldCountText.text = goldCount.ToString();
-        maxXp = 5f;
-        targetKillCount = 50;
-        Time.timeScale = 1;
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-        ClearButtons();
-        AddStartWeapon(0);
+        uiManager.goldCountText.text = goldCount.ToString();
+        AddStartWeapon();
         AddToUpgradeList(pasiveUpgrades);
-    }
-
-    public void Menu(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-        {
-            if (pauseMenu.activeSelf || rewardMenu.activeSelf)
-            {
-                ClosePauseMenu();
-            }
-            else if (!levelMenu.activeSelf)
-            {
-                OpenPauseMenu();
-            }
-        }
     }
 
     public void HandleKill()
     {
         killCount++;
-        killText.text = killCount + "";
+        uiManager.killText.text = killCount.ToString();
 
         if (killCount == targetKillCount)
         {
-            GetReward();
+            StartCoroutine(GetReward());
         }
     }
 
-    private void GetReward()
+    private IEnumerator GetReward()
     {
         var randomGoldReward = Random.Range(level * 1, level * 3);
         rewardMenu.SetActive(true);
@@ -123,9 +100,11 @@ public class GameManager : MonoBehaviour
 
         goldCount += randomGoldReward;
         player.ShieldValue();
-        goldCountText.text = goldCount.ToString();
+        uiManager.goldCountText.text = goldCount.ToString();
         PlayerPrefs.SetInt("Gold_Count", goldCount);
-        Pause(0);
+        
+        yield return new WaitForSeconds(5f);
+        rewardMenu.SetActive(false);
     }
 
     public void GetXP(int xpCount)
@@ -137,33 +116,26 @@ public class GameManager : MonoBehaviour
             LevelUp();
         }
 
-        xpSlider.value = xp / maxXp;
+        uiManager.xpSlider.value = xp / maxXp;
     }
 
     private void LevelUp()
     {
         if (upgrades.Count != 0)
         {
-            ClearButtons();
             OpenLevelMenu();
         }
 
         xp -= maxXp;
         level++;
-        levelText.text = "LV " + level;
+        uiManager.levelText.text = $"LV {level}";
 
-        if (level < 20)
+        maxXp += level switch
         {
-            maxXp += 10;
-        }
-        else if (level < 41)
-        {
-            maxXp += 13;
-        }
-        else
-        {
-            maxXp += 16;
-        }
+            < 20 => 10,
+            < 41 => 13,
+            _ => 16
+        };
 
         spawner.TryToSpawnBoss();
     }
@@ -172,45 +144,14 @@ public class GameManager : MonoBehaviour
     {
         var rewardGoldCount = Random.Range(level, level * 3);
         goldCount += rewardGoldCount;
-        goldCountText.text = goldCount + "";
+        uiManager.goldCountText.text = goldCount.ToString();
         PlayerPrefs.SetInt("Gold_Count", goldCount);
         player.Message($"+{rewardGoldCount}", Color.yellow);
     }
 
-    public void Death()
-    {
-        deathMenu.SetActive(true);
-        Time.timeScale = 0;
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-    }
-
-    public void ChangeScene(int i)
-    {
-        SceneManager.LoadScene(i);
-    }
-
-    public void Restart()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    public void ClosePauseMenu()
-    {
-        pauseMenu.SetActive(false);
-        levelMenu.SetActive(false);
-        rewardMenu.SetActive(false);
-        Pause(1);
-    }
-
-    private void OpenPauseMenu()
-    {
-        pauseMenu.SetActive(true);
-        Pause(0);
-    }
-
     public void Upgrade(int id)
     {
+        Debug.Log($"Upgrade {id}");
         var upgradeData = chosedUpgrades[id];
         if (receivedUpgrades == null) receivedUpgrades = new List<UpgradeData>();
         switch (upgradeData.upgradeType)
@@ -249,105 +190,87 @@ public class GameManager : MonoBehaviour
 
         if (xp >= maxXp&&upgrades.Count>0)
         {
-            xpSlider.value = xp / maxXp;
+            uiManager.xpSlider.value = xp / maxXp;
             LevelUp();
         }
         else
         {
-            ClosePauseMenu();
+            uiManager.ClosePauseMenu();
         }
     }
 
-    public List<UpgradeData> GetUpgrades(int count)
+    private List<UpgradeData> GetUpgrades()
     {
-        var UpgradeList = new List<UpgradeData>();
+        var upgradeList = new List<UpgradeData>();
         var chosedNumbers = new List<int>();
-        if (count > upgrades.Count)
-        {
-            count = upgrades.Count;
-        }
-        for (var i = 0; i < count;)
-        {
-            var id = Random.Range(0, upgrades.Count);
+        
+        var upgradeCount=3;
 
-            if (!chosedNumbers.Contains(id))
+        if (upgrades.Count < 3)
+        {
+            upgradeCount = upgrades.Count;
+            
+            for (int i = 2; i > 0; i--)
             {
-                UpgradeList.Add(upgrades[id]);
-                chosedNumbers.Add(id);
+                upgradeButtons[i].gameObject.SetActive(false);
+            }
+        }
+        
+
+        for (var i = 0; i < upgradeCount;)
+        {
+            var upgradeId = Random.Range(0, upgrades.Count);
+
+            if (!chosedNumbers.Contains(upgradeId))
+            {
+                upgradeList.Add(upgrades[upgradeId]);
+                chosedNumbers.Add(upgradeId);
                 i++;
             }
         }
+        
+        
 
-        return UpgradeList;
-    }
-
-    private void ClearButtons()
-    {
-        for (var i = 0; i < upgradeButtons.Count; i++)
-        {
-            upgradeButtons[i].Clear();
-            upgradeButtons[i].gameObject.SetActive(false);
-        }
+        return upgradeList;
     }
 
     private void OpenLevelMenu()
     {
-        if (chosedUpgrades == null) chosedUpgrades = new List<UpgradeData>();
+        chosedUpgrades ??= new List<UpgradeData>();
         chosedUpgrades.Clear();
-        chosedUpgrades.AddRange(GetUpgrades(3));
+        chosedUpgrades.AddRange(GetUpgrades());
 
         for (var i = 0; i < chosedUpgrades.Count; i++)
         {
             upgradeButtons[i].gameObject.SetActive(true);
-            upgradeButtons[i].Upgrade(chosedUpgrades[i]);
+            upgradeButtons[i].HandleUpgradeButtons(chosedUpgrades[i]);
         }
 
-        levelMenu.SetActive(true);
-        Pause(0);
+        uiManager.levelMenu.SetActive(true);
+        uiManager.PauseGame();
     }
 
     internal void AddToUpgradeList(List<UpgradeData> newUpgrades)
     {
-        this.upgrades.AddRange(newUpgrades);
-    }
-
-    private void Pause(int i)
-    {
-        Time.timeScale = i;
-
-        if (i == 0)
-        {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-            CharacterSpecs();
-        }
-        else
-        {
-            playerSpecPanel.SetActive(false);
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
+        upgrades.AddRange(newUpgrades);
     }
 
     private void AddSpriteToUpgradeSprites(UpgradeData upgradeData)
     {
-        for (var i = 0; i < upgradePictures.Count; i++)
+        foreach (var upgradePicture in uiManager.upgradePictures.Where(upgradePicture => !upgradePicture.enabled))
         {
-            if (!upgradePictures[i].enabled)
-            {
-                upgradePictures[i].enabled = !upgradePictures[i].enabled;
-                upgradePictures[i].sprite = upgradeData.icon;
-                break;
-            }
+            upgradePicture.enabled = !upgradePicture.enabled;
+            upgradePicture.sprite = upgradeData.icon;
+            break;
         }
     }
 
-    private void AddStartWeapon(int i)
+    private void AddStartWeapon()
     {
-        weaponManager.AddWeapon(upgrades[i].weaponData);
-        AddSpriteToUpgradeSprites(upgrades[i]);
-        receivedUpgrades.Add(upgrades[i]);
-        upgrades.Remove(upgrades[i]);
+        weaponManager.AddWeapon(upgrades[0].weaponData);
+        AddSpriteToUpgradeSprites(upgrades[0]);
+        receivedUpgrades.Add(upgrades[0]);
+        upgrades.Remove(upgrades[0]);
     }
 
     public void AddWeapon(UpgradeData upgradeData)
@@ -355,15 +278,5 @@ public class GameManager : MonoBehaviour
         weaponManager.AddWeapon(upgradeData.weaponData);
         AddSpriteToUpgradeSprites(upgradeData);
         receivedUpgrades.Add(upgradeData);
-    }
-
-    private void CharacterSpecs()
-    {
-        playerSpecTexts[0].text = player.maxHealth + "";
-        playerSpecTexts[1].text = player.armor + "";
-        playerSpecTexts[2].text = player.speed + "";
-        playerSpecTexts[3].text = player.regenerate + "";
-        playerSpecTexts[4].text = player.magnet + "";
-        playerSpecPanel.SetActive(true);
     }
 }

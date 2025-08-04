@@ -1,24 +1,21 @@
 using UnityEngine;
 
-namespace Others
+public class TerrainTile : MonoBehaviour
 {
-    public class TerrainTile : MonoBehaviour
+    private ChestSpawner chestSpawner;
+    [SerializeField] private Vector2Int tilePos;
+
+    private void Start()
     {
-        private ChestSpawner chestSpawner;
-        [SerializeField] private Vector2Int tilePos;
+        chestSpawner = GetComponentInChildren<ChestSpawner>();
 
-        private void Start()
-        {
-            chestSpawner = GetComponentInChildren<ChestSpawner>();
+        GetComponentInParent<WorldScrolling>().Add(gameObject, tilePos);
 
-            GetComponentInParent<WorldScrolling>().Add(gameObject, tilePos);
+        transform.position = new Vector3(-100, -100, 0);
+    }
 
-            transform.position = new Vector3(-100, -100, 0);
-        }
-
-        public void Spawn()
-        {
-            chestSpawner.Spawn();
-        }
+    public void Spawn()
+    {
+        chestSpawner.Spawn();
     }
 }

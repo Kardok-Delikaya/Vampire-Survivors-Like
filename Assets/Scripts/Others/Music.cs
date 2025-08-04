@@ -1,21 +1,20 @@
 using UnityEngine;
 
-namespace Others
+[RequireComponent(typeof(AudioSource))]
+public class Music : MonoBehaviour
 {
-    public class Music : MonoBehaviour
-    {
-        [SerializeField] private AudioClip musicClip;
-        private AudioSource au;
+    [SerializeField] private AudioClip musicClip;
+    private AudioSource au;
 
-        private void Start()
-        {
-            au = GetComponent<AudioSource>();
-            Play(musicClip);
-        }
-        public void Play(AudioClip music)
-        {
-            au.clip = music;
-            au.Play();
-        }
+    private void Start()
+    {
+        au = GetComponent<AudioSource>();
+        Play(musicClip);
+    }
+
+    public void Play(AudioClip music)
+    {
+        au.clip = music;
+        au.Play();
     }
 }

@@ -39,7 +39,9 @@ public class LittleFriend : Weapons
         ShootAtMoveDirection(spawnnedBullet);
         spawnnedBullet.transform.eulerAngles = new Vector3(0, 0,
             Random.Range(spawnnedBullet.transform.eulerAngles.z - 15, spawnnedBullet.transform.eulerAngles.z + 15));
-
+    
+        spawnnedBullet.transform.SetParent(null);
+        
         if (bulletCount > 0)
         {
             Invoke(nameof(BulletThrow), 0.05f);
@@ -58,6 +60,8 @@ public class LittleFriend : Weapons
             false, damageableLayer);
         ShootAtMoveDirection(_bomb);
 
+        _bomb.transform.SetParent(null);
+        
         if (bulletCount > 0)
         {
             Invoke(nameof(BulletThrow), 0.05f);

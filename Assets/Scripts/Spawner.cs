@@ -2,12 +2,8 @@
 
 public class Spawner : MonoBehaviour
 {
-    private Transform player;
-    private GameManager gameManager;
-
     [Header("Spawn Area")]
-    [SerializeField]
-    private Vector2 spawnArea;
+    [SerializeField] private Vector2 spawnArea;
 
     [Header("Enemy Spawn")]
     public int enemyCount;
@@ -18,34 +14,30 @@ public class Spawner : MonoBehaviour
     [SerializeField] private int[] enemySpawnMaxLevel;
 
     [Header("Boss Spawn")]
-    [SerializeField]
-    private GameObject[] bosses;
+    [SerializeField] private GameObject[] bosses;
 
     private void Start()
     {
         enemySpawnTimer = new float[enemies.Length];
-        gameManager=GetComponent<GameManager>();
-        player = FindAnyObjectByType<PlayerManager>().transform;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
-        if (enemyCount < 100)
+        if (enemyCount >= 100) return;
+        
+        for (var i = 0; i < enemies.Length; i++)
         {
-            for (var i = 0; i < enemies.Length; i++)
+            if (enemySpawnStartLevel[i] > GameManager.Instance.level ||
+                enemySpawnMaxLevel[i] <= GameManager.Instance.level) continue;
+            
+            if (enemySpawnTimer[i] <= 0f)
             {
-                if (enemySpawnStartLevel[i] <= gameManager.level && enemySpawnMaxLevel[i] > gameManager.level)
-                {
-                    if (enemySpawnTimer[i] <= 0f)
-                    {
-                        SpawnEnemy(i);
-                        enemySpawnTimer[i] = enemySpawnCoolDown[i];
-                    }
-                    else
-                    {
-                        enemySpawnTimer[i] -= Time.fixedDeltaTime;
-                    }
-                }
+                SpawnEnemy(i);
+                enemySpawnTimer[i] = enemySpawnCoolDown[i];
+            }
+            else
+            {
+                enemySpawnTimer[i] -= Time.deltaTime;
             }
         }
     }
@@ -53,7 +45,7 @@ public class Spawner : MonoBehaviour
     private void SpawnEnemy(int i)
     {
         var position = GenerateRandomPosition();
-        position += player.position;
+        position += GameManager.Instance.player.transform.position;
         var newEnemy = Instantiate(enemies[i]);
         newEnemy.transform.position = position;
         enemyCount++;
@@ -61,23 +53,21 @@ public class Spawner : MonoBehaviour
 
     public void TryToSpawnBoss()
     {
+        if (GameManager.Instance.level % 5 != 0) return;
+        
+        var bossNumber = GameManager.Instance.level / 5;
         var position = GenerateRandomPosition();
-        position += player.position;
-
-        if (gameManager.level % 5 == 0)
+        position += GameManager.Instance.player.transform.position;
+            
+        if (bossNumber < bosses.Length)
         {
-            var bossNumber = gameManager.level / 5;
-
-            if (bossNumber < bosses.Length)
-            {
-                var newEnemy = Instantiate(bosses[bossNumber-1]);
-                newEnemy.transform.position = position;
-            }
-            else
-            {
-                var newEnemy = Instantiate(bosses[bosses.Length-1]);
-                newEnemy.transform.position = position;
-            }
+            var newEnemy = Instantiate(bosses[bossNumber-1]);
+            newEnemy.transform.position = position;
+        }
+        else
+        {
+            var newEnemy = Instantiate(bosses[bosses.Length-1]);
+            newEnemy.transform.position = position;
         }
     }
 

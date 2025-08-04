@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(PasiveItems))]
+[RequireComponent(typeof(WeaponManager))]
 public class PlayerManager : MonoBehaviour
 {
     private Animator anim;
     private Rigidbody2D rb;
-    private GameManager gameManager;
     private SpriteRenderer sprite;
 
     [Header("Character Stats")]
@@ -50,7 +51,6 @@ public class PlayerManager : MonoBehaviour
 
     private void Start()
     {
-        gameManager=FindAnyObjectByType<GameManager>();
         sprite = GetComponent<SpriteRenderer>();
         GetStatUpgrades(playerStats);
         GetStatUpgrades(persistantUpgrade);
@@ -108,14 +108,14 @@ public class PlayerManager : MonoBehaviour
         switch (loot.id)
         {
             case 0:
-                gameManager.GetXP(loot.count);
+                GameManager.Instance.GetXP(loot.count);
                 xpCount--;
                 break;
             case 1:
                 GetHealth(10);
                 break;
             case 2:
-                gameManager.GetGold();
+                GameManager.Instance.GetGold();
                 break;
             default:
                 break;
@@ -139,7 +139,7 @@ public class PlayerManager : MonoBehaviour
 
         if (health <= 0)
         {
-            gameManager.Death();
+            GameManager.Instance.uiManager.OpenPauseMenu(true);
         }
 
         healthBar.transform.localScale = new Vector3((float)health / maxHealth, 1, 1);
@@ -161,7 +161,6 @@ public class PlayerManager : MonoBehaviour
             shield = 0;
         }
 
-        gameManager.playerSpecTexts[1].text = shield + "";
         Message($"-{tempDamage}", Color.blue);
         ShieldValue();
     }
@@ -201,11 +200,8 @@ public class PlayerManager : MonoBehaviour
     {
         if (healthRegenerateTimer <= 0)
         {
-            if (health < maxHealth)
-            {
-                GetHealth(regenerate);
-                healthRegenerateTimer = 5;
-            }
+            GetHealth(regenerate);
+            healthRegenerateTimer = 5;
         }
         else
         {
