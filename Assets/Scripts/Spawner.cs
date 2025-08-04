@@ -89,4 +89,9 @@ public class Spawner : MonoBehaviour
         position.z = 0;
         return position;
     }
+
+    public void HandleKill()
+    {
+        enemyCount--;
+    }
 }

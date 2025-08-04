@@ -1,7 +1,9 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(SpriteRenderer))]
 public class EnemyManager : MonoBehaviour, IDamage
 {
     private Vector3 direction;
@@ -9,7 +11,6 @@ public class EnemyManager : MonoBehaviour, IDamage
     private Rigidbody2D rb;
     private SpriteRenderer sprite;
     private float attackCoolDown;
-    private bool active;
     private bool beingPushed;
 
     [SerializeField] private float health;
@@ -19,18 +20,21 @@ public class EnemyManager : MonoBehaviour, IDamage
     [SerializeField] private int xpRewardCount;
     [SerializeField] private bool canBePushed;
 
+    [Header("Event")]
+    public UnityEvent OnDeath;
+    
     private void Awake()
     {
+        rb = GetComponent<Rigidbody2D>();
         sprite=GetComponent<SpriteRenderer>();
         player = GameManager.Instance.player;
-        rb = GetComponent<Rigidbody2D>();
     }
 
     private void FixedUpdate()
     {
-        direction = (player.transform.position - transform.position).normalized;
-
         FarDestroy();
+        direction = (player.transform.position - transform.position).normalized;
+        attackCoolDown-= Time.deltaTime;
 
         if (beingPushed)
             return;
@@ -42,19 +46,10 @@ public class EnemyManager : MonoBehaviour, IDamage
     {
         if (collision.gameObject==player.gameObject)
         {
-            if (!active)
+            if (attackCoolDown <= 0)
             {
-                Damage();
+                player.TakeDamage(damage);
                 attackCoolDown = 1;
-                active = true;
-            }
-            else
-            {
-                attackCoolDown -= Time.deltaTime;
-                if (attackCoolDown <= 0)
-                {
-                    active = false;
-                }
             }
         }
     }
@@ -73,28 +68,25 @@ public class EnemyManager : MonoBehaviour, IDamage
         }
     }
 
-    private void Damage()
-    {
-        player.TakeDamage(damage);
-    }
-
     public void TakeDamage(int damage, int power)
     {
         health -= damage;
 
-        var DamagePopUp = Instantiate(damagePopUp, transform.position, transform.rotation) as GameObject;
-        DamagePopUp.transform.SetParent(null);
-        DamagePopUp.GetComponentInChildren<TMPro.TextMeshPro>().text = damage+"";
+        if (health > 0)
+        {
+            var DamagePopUp = Instantiate(damagePopUp, transform.position, transform.rotation) as GameObject;
+            DamagePopUp.transform.SetParent(null);
+            DamagePopUp.GetComponentInChildren<TMPro.TextMeshPro>().text = damage + "";
 
-        if (health <= 0)
+            if (canBePushed)
+            {
+                StartCoroutine(GetPushedBack(power));
+            }
+        }
+        else
         {
             HandleDeath();
-            return;
-        }
-
-        if (canBePushed)
-        {
-            StartCoroutine(GetPushedBack(power));
+            Destroy(gameObject);
         }
     }
 
@@ -111,9 +103,7 @@ public class EnemyManager : MonoBehaviour, IDamage
     private void HandleDeath()
     {
         GameManager.Instance.HandleKill();
-        player.SpawnXP(transform, xpRewardCount);
-        GameManager.Instance.spawner.enemyCount--;
-        Destroy(gameObject);
+        GameManager.Instance.SpawnXP(transform,xpRewardCount);
     }
 
     private void FarDestroy()

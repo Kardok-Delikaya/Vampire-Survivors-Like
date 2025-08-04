@@ -26,12 +26,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private GameObject healthBar;
     [SerializeField] private GameObject shieldBar;
     [SerializeField] private GameObject damagePopUp;
-
-    [Header("XP")]
-    public int xpCount;
-    [SerializeField] private GameObject xp;
-    public LootableObject spawnedRedXP;
-
+    
     [Header("Layers")]
     [SerializeField]
     private LayerMask lootLayer;
@@ -109,13 +104,12 @@ public class PlayerManager : MonoBehaviour
         {
             case 0:
                 GameManager.Instance.GetXP(loot.count);
-                xpCount--;
                 break;
             case 1:
                 GetHealth(10);
                 break;
             case 2:
-                GameManager.Instance.GetGold();
+                GameManager.Instance.GetGold(Random.Range(10,50));
                 break;
             default:
                 break;
@@ -198,39 +192,12 @@ public class PlayerManager : MonoBehaviour
 
     private void Regenerate()
     {
+        healthRegenerateTimer -= Time.deltaTime;
+        
         if (healthRegenerateTimer <= 0)
         {
             GetHealth(regenerate);
             healthRegenerateTimer = 5;
-        }
-        else
-        {
-            healthRegenerateTimer -= Time.deltaTime;
-        }
-    }
-
-    public void SpawnXP(Transform transform, int xpRewardCount)
-    {
-        if (xpCount > 50)
-        {
-            if (spawnedRedXP != null)
-            {
-                spawnedRedXP.count += xpRewardCount;
-            }
-            else
-            {
-                var XP = Instantiate(xp, transform.position, transform.rotation);
-                XP.GetComponent<LootableObject>().count = xpRewardCount;
-                XP.GetComponent<SpriteRenderer>().color = Color.red;
-                spawnedRedXP = XP.GetComponent<LootableObject>();
-                xpCount++;
-            }
-        }
-        else
-        {
-            var XP = Instantiate(xp, transform.position, transform.rotation);
-            XP.GetComponent<LootableObject>().count = xpRewardCount;
-            xpCount++;
         }
     }
 

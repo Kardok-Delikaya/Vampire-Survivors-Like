@@ -22,7 +22,7 @@ public class LootableObject : MonoBehaviour
 
         if (id == 0)
         {
-            GameManager.Instance.player.xpCount--;
+            GameManager.Instance.xpObjCount--;
         }
     }
 }

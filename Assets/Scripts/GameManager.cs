@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int targetKillCount;
     private int killCount;
     private int goldCount;
-    private float xp;
+    private float xpCount;
 
     [Header("Rewards")]
     [SerializeField]
@@ -38,7 +38,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private List<UpgradeButton> upgradeButtons;
     [SerializeField] private WeaponManager weaponManager;
     [SerializeField] private PasiveItems pasiveItems;
-
+    
+    [Header("XP")]
+    public int xpObjCount;
+    [SerializeField] private GameObject xpObj;
+    public LootableObject spawnedRedXP;
+    
     private void Awake()
     {
         if (Instance == null)
@@ -48,8 +53,7 @@ public class GameManager : MonoBehaviour
         
         uiManager=GetComponent<UIManager>();
         
-        goldCount = PlayerPrefs.GetInt("Gold_Count");
-        uiManager.goldCountText.text = goldCount.ToString();
+        GetGold(0);
         AddStartWeapon();
         AddToUpgradeList(pasiveUpgrades);
     }
@@ -57,6 +61,7 @@ public class GameManager : MonoBehaviour
     public void HandleKill()
     {
         killCount++;
+        spawner.enemyCount--;
         uiManager.killText.text = killCount.ToString();
 
         if (killCount == targetKillCount)
@@ -67,7 +72,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator GetReward()
     {
-        var randomGoldReward = Random.Range(level * 1, level * 3);
+        var randomGoldReward = Random.Range(10, 50);
         rewardMenu.SetActive(true);
 
         switch (targetKillCount)
@@ -98,10 +103,8 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        goldCount += randomGoldReward;
+        GetGold(randomGoldReward);
         player.ShieldValue();
-        uiManager.goldCountText.text = goldCount.ToString();
-        PlayerPrefs.SetInt("Gold_Count", goldCount);
         
         yield return new WaitForSeconds(5f);
         rewardMenu.SetActive(false);
@@ -109,14 +112,15 @@ public class GameManager : MonoBehaviour
 
     public void GetXP(int xpCount)
     {
-        xp += xpCount;
+        xpObjCount--;
+        xpCount += xpCount;
 
-        if (xp >= maxXp)
+        if (xpCount >= maxXp)
         {
             LevelUp();
         }
 
-        uiManager.xpSlider.value = xp / maxXp;
+        uiManager.xpSlider.value = xpCount / maxXp;
     }
 
     private void LevelUp()
@@ -126,7 +130,7 @@ public class GameManager : MonoBehaviour
             OpenLevelMenu();
         }
 
-        xp -= maxXp;
+        xpCount -= maxXp;
         level++;
         uiManager.levelText.text = $"LV {level}";
 
@@ -140,13 +144,12 @@ public class GameManager : MonoBehaviour
         spawner.TryToSpawnBoss();
     }
 
-    public void GetGold()
+    public void GetGold(int amount)
     {
-        var rewardGoldCount = Random.Range(level, level * 3);
-        goldCount += rewardGoldCount;
+        goldCount+=amount;
         uiManager.goldCountText.text = goldCount.ToString();
         PlayerPrefs.SetInt("Gold_Count", goldCount);
-        player.Message($"+{rewardGoldCount}", Color.yellow);
+        player.Message($"+{amount}", Color.yellow);
     }
 
     public void Upgrade(int id)
@@ -188,9 +191,9 @@ public class GameManager : MonoBehaviour
         receivedUpgrades.Add(upgradeData);
         upgrades.Remove(upgradeData);
 
-        if (xp >= maxXp&&upgrades.Count>0)
+        if (xpCount >= maxXp&&upgrades.Count>0)
         {
-            uiManager.xpSlider.value = xp / maxXp;
+            uiManager.xpSlider.value = xpCount / maxXp;
             LevelUp();
         }
         else
@@ -278,5 +281,30 @@ public class GameManager : MonoBehaviour
         weaponManager.AddWeapon(upgradeData.weaponData);
         AddSpriteToUpgradeSprites(upgradeData);
         receivedUpgrades.Add(upgradeData);
+    }
+    
+    public void SpawnXP(Transform transform, int xpRewardCount)
+    {
+        if (xpCount > 50)
+        {
+            if (spawnedRedXP != null)
+            {
+                spawnedRedXP.count += xpRewardCount;
+            }
+            else
+            {
+                var XP = Instantiate(xpObj, transform.position, transform.rotation);
+                XP.GetComponent<LootableObject>().count = xpRewardCount;
+                XP.GetComponent<SpriteRenderer>().color = Color.red;
+                spawnedRedXP = XP.GetComponent<LootableObject>();
+                xpCount++;
+            }
+        }
+        else
+        {
+            var XP = Instantiate(xpObj, transform.position, transform.rotation);
+            XP.GetComponent<LootableObject>().count = xpRewardCount;
+            xpCount++;
+        }
     }
 }
