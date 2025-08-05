@@ -9,8 +9,8 @@ public class WorldScrolling : MonoBehaviour
     private GameObject[,] terrainTiles;
     [SerializeField] private int terrainTileHorizontalCount;
     [SerializeField] private int terrainTileVerticalCount;
-    private readonly int fieldOfVisionHeight = 3;
-    private readonly int fieldOfVisionWidth = 3;
+    [SerializeField] private int fieldOfVisionHeight = 3;
+    [SerializeField] private int fieldOfVisionWidth = 3;
 
     private void Awake()
     {
@@ -42,19 +42,19 @@ public class WorldScrolling : MonoBehaviour
 
     private void UpdateTilesOnScreen()
     {
-        for (var pov_x = -fieldOfVisionWidth / 2; pov_x <= fieldOfVisionWidth / 2; pov_x++)
+        for (var povX = -fieldOfVisionWidth / 2; povX <= fieldOfVisionWidth / 2; povX++)
         {
-            for (var pov_y = -fieldOfVisionHeight / 2; pov_y <= fieldOfVisionHeight / 2; pov_y++)
+            for (var povY = -fieldOfVisionHeight / 2; povY <= fieldOfVisionHeight / 2; povY++)
             {
-                var tileToUpdate_x = CalculatePositionOnAxisWithWrap(playerTilePosition.x + pov_x, true);
-                var tileToUpdate_y = CalculatePositionOnAxisWithWrap(playerTilePosition.y + pov_y, false);
+                var tileToUpdateX = CalculatePositionOnAxisWithWrap(playerTilePosition.x + povX, true);
+                var tileToUpdateY = CalculatePositionOnAxisWithWrap(playerTilePosition.y + povY, false);
 
-                var tile = terrainTiles[tileToUpdate_x, tileToUpdate_y];
-                var newPosition = CalculateTilePosition(playerTilePosition.x + pov_x, playerTilePosition.y + pov_y);
+                var tile = terrainTiles[tileToUpdateX, tileToUpdateY];
+                var newPosition = CalculateTilePosition(playerTilePosition.x + povX, playerTilePosition.y + povY);
                 if (newPosition != tile.transform.position)
                 {
                     tile.transform.position = newPosition;
-                    terrainTiles[tileToUpdate_x, tileToUpdate_y].GetComponent<TerrainTile>().Spawn();
+                    terrainTiles[tileToUpdateX, tileToUpdateY].GetComponent<TerrainTile>().Spawn();
                 }
             }
         }

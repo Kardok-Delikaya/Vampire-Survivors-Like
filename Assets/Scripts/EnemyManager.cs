@@ -58,13 +58,15 @@ public class EnemyManager : MonoBehaviour, IDamage
     {
         rb.linearVelocity = direction * speed;
 
-        if (player.transform.position.x - transform.position.x > 0)
+        if (sprite.flipX)
         {
-            sprite.flipX = false;
+			if(player.transform.position.x - transform.position.x > 0)
+            	sprite.flipX = false;
         }
-        else if (player.transform.position.x - transform.position.x < 0)
+        else
         {
-            sprite.flipX = true;
+			if (player.transform.position.x - transform.position.x < 0)
+            	sprite.flipX = true;
         }
     }
 
@@ -79,9 +81,7 @@ public class EnemyManager : MonoBehaviour, IDamage
             DamagePopUp.GetComponentInChildren<TMPro.TextMeshPro>().text = damage + "";
 
             if (canBePushed)
-            {
                 StartCoroutine(GetPushedBack(power));
-            }
         }
         else
         {

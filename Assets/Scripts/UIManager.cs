@@ -28,6 +28,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private List<Button> upgradeButtons = new List<Button>();
     private void Start()
     {
+        ContinueGame();
+        
         restartButton.onClick.AddListener(Restart);
         mainMenuButton.onClick.AddListener(GoBackToMenu);
         closeButton.onClick.AddListener(ClosePauseMenu);
