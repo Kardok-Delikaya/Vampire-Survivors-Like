@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(Spawner))]
 public class GameManager : MonoBehaviour
@@ -21,7 +17,7 @@ public class GameManager : MonoBehaviour
     public int level;
     [SerializeField] private float maxXp;
     [SerializeField] private int targetKillCount;
-    private int killCount;
+    public int killCount { get; private set; }
     private int goldCount;
     private float xpCount;
 
@@ -46,8 +42,6 @@ public class GameManager : MonoBehaviour
     
     private void Awake()
     {
-		
-
         if (Instance == null)
             Instance = this;
         else
@@ -60,11 +54,10 @@ public class GameManager : MonoBehaviour
         AddToUpgradeList(pasiveUpgrades);
     }
 
-    public void HandleKill()
+    public void HandleKill(Transform xpTransform,int xpAmount)
     {
         killCount++;
-        spawner.enemyCount--;
-        uiManager.killText.text = killCount.ToString();
+        SpawnXP(xpTransform,xpAmount);
 
         if (killCount == targetKillCount)
         {
@@ -112,10 +105,10 @@ public class GameManager : MonoBehaviour
         rewardMenu.SetActive(false);
     }
 
-    public void GetXP(int xpCount)
+    public void GetXP(int xpAmount)
     {
         xpObjCount--;
-        xpCount += xpCount;
+        xpCount += xpAmount;
 
         if (xpCount >= maxXp)
         {
@@ -156,7 +149,6 @@ public class GameManager : MonoBehaviour
 
     public void Upgrade(int id)
     {
-        Debug.Log($"Upgrade {id}");
         var upgradeData = chosedUpgrades[id];
         if (receivedUpgrades == null) receivedUpgrades = new List<UpgradeData>();
         switch (upgradeData.upgradeType)

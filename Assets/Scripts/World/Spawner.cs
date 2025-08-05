@@ -6,13 +6,17 @@ public class Spawner : MonoBehaviour
     [SerializeField] private Vector2 spawnArea;
 
     [Header("Enemy Spawn")]
-    public int enemyCount;
+    public int EnemyCount
+    {
+        private get;
+        set;
+    }
     [SerializeField] private GameObject[] enemies;
-    private float[] enemySpawnTimer;
     [SerializeField] private float[] enemySpawnCoolDown;
     [SerializeField] private int[] enemySpawnStartLevel;
     [SerializeField] private int[] enemySpawnMaxLevel;
-
+    private float[] enemySpawnTimer;
+    
     [Header("Boss Spawn")]
     [SerializeField] private GameObject[] bosses;
 
@@ -23,7 +27,7 @@ public class Spawner : MonoBehaviour
 
     private void Update()
     {
-        if (enemyCount >= 100) return;
+        if (EnemyCount >= 100) return;
         
         for (var i = 0; i < enemies.Length; i++)
         {
@@ -48,7 +52,7 @@ public class Spawner : MonoBehaviour
         position += GameManager.Instance.player.transform.position;
         var newEnemy = Instantiate(enemies[i]);
         newEnemy.transform.position = position;
-        enemyCount++;
+        EnemyCount++;
     }
 
     public void TryToSpawnBoss()
@@ -92,6 +96,6 @@ public class Spawner : MonoBehaviour
 
     public void HandleKill()
     {
-        enemyCount--;
+        EnemyCount--;
     }
 }

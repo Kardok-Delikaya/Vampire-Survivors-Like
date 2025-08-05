@@ -5,7 +5,7 @@ public class LootableObject : MonoBehaviour
     private Transform player;
 
     public int id;
-    [HideInInspector] public int count;
+    public int count;
 
     private void Start()
     {

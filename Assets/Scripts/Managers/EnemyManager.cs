@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(SpriteRenderer))]
@@ -17,7 +18,7 @@ public class EnemyManager : MonoBehaviour, IDamage
     [SerializeField] private float speed;
     [SerializeField] private int damage;
     [SerializeField] private GameObject damagePopUp;
-    [SerializeField] private int xpRewardCount;
+    [FormerlySerializedAs("xpRewardCount")] [SerializeField] private int xpRewardAmount;
     [SerializeField] private bool canBePushed;
 
     [Header("Event")]
@@ -25,6 +26,9 @@ public class EnemyManager : MonoBehaviour, IDamage
     
     private void Awake()
     {
+        OnDeath.AddListener(delegate { GameManager.Instance.HandleKill(transform, xpRewardAmount); });
+        OnDeath.AddListener(GameManager.Instance.spawner.HandleKill);
+        OnDeath.AddListener(GameManager.Instance.uiManager.HandleKill);
         rb = GetComponent<Rigidbody2D>();
         sprite=GetComponent<SpriteRenderer>();
         player = GameManager.Instance.player;
@@ -85,7 +89,7 @@ public class EnemyManager : MonoBehaviour, IDamage
         }
         else
         {
-            HandleDeath();
+            OnDeath.Invoke();
             Destroy(gameObject);
         }
     }
@@ -98,12 +102,6 @@ public class EnemyManager : MonoBehaviour, IDamage
         yield return new WaitForSeconds(.2f);
 
         beingPushed = false;
-    }
-
-    private void HandleDeath()
-    {
-        GameManager.Instance.HandleKill();
-        GameManager.Instance.SpawnXP(transform,xpRewardCount);
     }
 
     private void FarDestroy()

@@ -26,6 +26,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button mainMenuButton;
     [SerializeField] private Button closeButton;
     [SerializeField] private List<Button> upgradeButtons = new List<Button>();
+    
     private void Start()
     {
         ContinueGame();
@@ -110,5 +111,10 @@ public class UIManager : MonoBehaviour
         playerSpecTexts[3].text = GameManager.Instance.player.regenerate + "";
         playerSpecTexts[4].text = GameManager.Instance.player.magnet + "";
         playerSpecPanel.SetActive(true);
+    }
+
+    public void HandleKill()
+    {
+        killText.text = GameManager.Instance.killCount.ToString();
     }
 }

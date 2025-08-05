@@ -2865,6 +2865,9 @@ MonoBehaviour:
   - {fileID: 1954900003}
   weaponManager: {fileID: 2144853733}
   pasiveItems: {fileID: 2144853732}
+  xpObjCount: 0
+  xpObj: {fileID: 3306251738472909407, guid: 580fd70cd9841984fbb757a783dcb13a, type: 3}
+  spawnedRedXP: {fileID: 0}
 --- !u!114 &905319886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8402,6 +8405,8 @@ MonoBehaviour:
   playerTilePosition: {x: 0, y: 0}
   terrainTileHorizontalCount: 3
   terrainTileVerticalCount: 3
+  fieldOfVisionHeight: 3
+  fieldOfVisionWidth: 3
 --- !u!114 &2022316906
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8881,9 +8886,6 @@ MonoBehaviour:
   healthBar: {fileID: 1083968836}
   shieldBar: {fileID: 1736456248}
   damagePopUp: {fileID: 744951814735632710, guid: 49b2860cdfd96d44ab6c6b6a11f2f028, type: 3}
-  xpCount: 0
-  xp: {fileID: 3306251738472909407, guid: 580fd70cd9841984fbb757a783dcb13a, type: 3}
-  spawnedRedXP: {fileID: 0}
   lootLayer:
     serializedVersion: 2
     m_Bits: 64
