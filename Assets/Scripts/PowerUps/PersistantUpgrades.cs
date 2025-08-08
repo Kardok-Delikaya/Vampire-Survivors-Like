@@ -29,13 +29,15 @@ public class PersistantUpgrades : MonoBehaviour
         
         for (var i=0; i<buttons.Length; i++)
         {
-            buttons[i].GetComponent<Button>().onClick.AddListener(PersistantUpgradeInfoPanel(i));
+            var i1 = i;
+            buttons[i].GetComponent<Button>().onClick.AddListener(delegate { PersistantUpgradeInfoPanel(i1); });
         }
         
-        goldCount = PlayerPrefs.GetInt("Gold_Count");
+        
+        goldCount = PlayerPrefs.GetInt(key: "Gold_Count");
         goldText.text = goldCount + "";
         GetUpgradesToPersistantItem();
-        PersistantUpgradeInfoPanel(currentUpgradeButton);
+        PersistantUpgradeInfoPanel(0);
     }
 
     private void GetUpgradesToPersistantItem()
@@ -81,14 +83,13 @@ public class PersistantUpgrades : MonoBehaviour
         PlayerPrefs.SetInt("Gold_Count", goldCount);
     }
 
-    private UnityAction PersistantUpgradeInfoPanel(int upgradeID)
+    private void PersistantUpgradeInfoPanel(int upgradeID)
     {
         upgradeName.text = buttons[upgradeID].upgradeName;
         upgradeIcon.sprite = buttons[upgradeID].upgradeIcon;
         upgradeInfo.text = buttons[upgradeID].upgradeInfo;
         upgradeCost.text = buttons[upgradeID].upgradeCost + "";
         currentUpgradeButton = upgradeID;
-        return null;
     }
 
     public void Reset()
