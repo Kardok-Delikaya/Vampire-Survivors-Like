@@ -25,6 +25,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button restartButton;
     [SerializeField] private Button mainMenuButton;
     [SerializeField] private Button closeButton;
+    [SerializeField] private Button pauseButton;
     [SerializeField] private List<Button> upgradeButtons = new List<Button>();
     
     private void Start()
@@ -34,6 +35,7 @@ public class UIManager : MonoBehaviour
         restartButton.onClick.AddListener(Restart);
         mainMenuButton.onClick.AddListener(GoBackToMenu);
         closeButton.onClick.AddListener(ClosePauseMenu);
+        pauseButton.onClick.AddListener(delegate{OpenPauseMenu();});
 
         for (var buttonId = 0; buttonId < upgradeButtons.Count; buttonId++)
         {
@@ -46,14 +48,7 @@ public class UIManager : MonoBehaviour
     {
         if (context.performed)
         {
-            if (pauseMenu.activeSelf)
-            {
-                ClosePauseMenu();
-            }
-            else if (!levelMenu.activeSelf)
-            {
-                OpenPauseMenu();
-            }
+            OpenPauseMenu();
         }
     }
     
@@ -76,6 +71,14 @@ public class UIManager : MonoBehaviour
     
     public void OpenPauseMenu(bool isDead=false)
     {
+        if (pauseMenu.activeSelf)
+        {
+            ClosePauseMenu();
+            return;
+        }
+        
+        if (levelMenu.activeSelf) return;
+        
         if (isDead)
         {
             pauseMenuText.text = "You're Dead";
@@ -99,8 +102,8 @@ public class UIManager : MonoBehaviour
     {
         Time.timeScale = 1;
         playerSpecPanel.SetActive(false);
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
     }
     
     private void CharacterSpecs()

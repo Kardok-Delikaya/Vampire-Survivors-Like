@@ -28,8 +28,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private GameObject damagePopUp;
     
     [Header("Layers")]
-    [SerializeField]
-    private LayerMask lootLayer;
+    [SerializeField] private LayerMask lootLayer;
 
     private int speedMash = Animator.StringToHash("Speed");
 
@@ -56,12 +55,20 @@ public class PlayerManager : MonoBehaviour
 
     private void Update()
     {
+        Movement();
         CollectNearbyLoots();
 
         if (regenerate > 0)
             Regenerate();
     }
 
+    private void Movement()
+    {
+        rb.linearVelocity = new Vector2(Pos.x * speed, Pos.y * speed);
+
+        anim.SetFloat(speedMash, Pos.sqrMagnitude);
+    }
+    
     public void HandleMovement(InputAction.CallbackContext context)
     {
         Pos = context.ReadValue<Vector2>();
@@ -75,10 +82,6 @@ public class PlayerManager : MonoBehaviour
         {
             sprite.flipX = true;
         }
-
-        rb.linearVelocity = new Vector2(Pos.x * speed, Pos.y * speed);
-
-        anim.SetFloat(speedMash, Pos.sqrMagnitude);
     }
 
     private void CollectNearbyLoots()
