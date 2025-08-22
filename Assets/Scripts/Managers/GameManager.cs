@@ -291,14 +291,14 @@ public class GameManager : MonoBehaviour
                 XP.GetComponent<LootableObject>().count = xpRewardCount;
                 XP.GetComponent<SpriteRenderer>().color = Color.red;
                 spawnedRedXP = XP.GetComponent<LootableObject>();
-                xpCount++;
+                xpObjCount++;
             }
         }
         else
         {
             var XP = Instantiate(xpObj, transform.position, transform.rotation);
             XP.GetComponent<LootableObject>().count = xpRewardCount;
-            xpCount++;
+            xpObjCount++;
         }
     }
 }
