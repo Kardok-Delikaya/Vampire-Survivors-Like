@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
 
     public PlayerManager player;
     public Spawner spawner;
-    public UIManager uiManager { get; private set; }
+    public UIManager uiManager;
 
     [Header("Level")]
     public int level;
@@ -35,11 +35,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private WeaponManager weaponManager;
     [SerializeField] private PasiveItems pasiveItems;
     
-    [Header("XP")]
-    public int xpObjCount;
-    [SerializeField] private GameObject xpObj;
-    public LootableObject spawnedRedXP;
-    
     private void Awake()
     {
         if (Instance == null)
@@ -47,22 +42,15 @@ public class GameManager : MonoBehaviour
         else
             Destroy(gameObject);
         
-        uiManager=GetComponent<UIManager>();
-
-        GetGold(0);
+        GetGold(PlayerPrefs.GetInt("Gold_Count"));
         AddStartWeapon();
         AddToUpgradeList(pasiveUpgrades);
     }
 
-    public void HandleKill(Transform xpTransform,int xpAmount)
+    public void HandleKill()
     {
         killCount++;
-        SpawnXP(xpTransform,xpAmount);
-
-        if (killCount == targetKillCount)
-        {
-            StartCoroutine(GetReward());
-        }
+        if (killCount == targetKillCount) StartCoroutine(GetReward());
     }
 
     private IEnumerator GetReward()
@@ -107,7 +95,6 @@ public class GameManager : MonoBehaviour
 
     public void GetXP(int xpAmount)
     {
-        xpObjCount--;
         xpCount += xpAmount;
 
         if (xpCount >= maxXp)
@@ -115,7 +102,7 @@ public class GameManager : MonoBehaviour
             LevelUp();
         }
 
-        uiManager.xpSlider.value = xpCount / maxXp;
+        uiManager.xpSlider.value =  xpCount / maxXp;
     }
 
     private void LevelUp()
@@ -275,30 +262,5 @@ public class GameManager : MonoBehaviour
         weaponManager.AddWeapon(upgradeData.weaponData);
         AddSpriteToUpgradeSprites(upgradeData);
         receivedUpgrades.Add(upgradeData);
-    }
-    
-    public void SpawnXP(Transform transform, int xpRewardCount)
-    {
-        if (xpCount > 50)
-        {
-            if (spawnedRedXP != null)
-            {
-                spawnedRedXP.count += xpRewardCount;
-            }
-            else
-            {
-                var XP = Instantiate(xpObj, transform.position, transform.rotation);
-                XP.GetComponent<LootableObject>().count = xpRewardCount;
-                XP.GetComponent<SpriteRenderer>().color = Color.red;
-                spawnedRedXP = XP.GetComponent<LootableObject>();
-                xpObjCount++;
-            }
-        }
-        else
-        {
-            var XP = Instantiate(xpObj, transform.position, transform.rotation);
-            XP.GetComponent<LootableObject>().count = xpRewardCount;
-            xpObjCount++;
-        }
     }
 }

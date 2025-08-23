@@ -4,7 +4,7 @@ public class LootableObject : MonoBehaviour
 {
     private Transform player;
 
-    public int id;
+    public int id; //0: XP || 1: Health || 2: Gold
     public int count;
 
     private void Start()
@@ -17,12 +17,7 @@ public class LootableObject : MonoBehaviour
         var distance = Vector3.Distance(transform.position, player.position);
 
         if (!(distance > 50)) return;
-        
-        Destroy(gameObject);
 
-        if (id == 0)
-        {
-            GameManager.Instance.xpObjCount--;
-        }
+        gameObject.SetActive(false);
     }
 }

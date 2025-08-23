@@ -26,7 +26,8 @@ public class EnemyManager : MonoBehaviour, IDamage
     
     private void Awake()
     {
-        OnDeath.AddListener(delegate { GameManager.Instance.HandleKill(transform, xpRewardAmount); });
+        OnDeath.AddListener(delegate {FindAnyObjectByType<XPSpawner>().SpawnXP(transform, xpRewardAmount); });
+        OnDeath.AddListener(GameManager.Instance.HandleKill);
         OnDeath.AddListener(GameManager.Instance.spawner.HandleKill);
         OnDeath.AddListener(GameManager.Instance.uiManager.HandleKill);
         rb = GetComponent<Rigidbody2D>();

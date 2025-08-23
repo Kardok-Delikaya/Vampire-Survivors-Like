@@ -96,7 +96,7 @@ public class PlayerManager : MonoBehaviour
             if (Vector2.Distance(loots[i].transform.position, transform.position) < .3f)
             {
                 AddLoot(loot);
-                Destroy(loot.gameObject);
+                loot.gameObject.SetActive(false);
             }
         }
     }
@@ -113,8 +113,6 @@ public class PlayerManager : MonoBehaviour
                 break;
             case 2:
                 GameManager.Instance.GetGold(Random.Range(10,50));
-                break;
-            default:
                 break;
         }
     }
